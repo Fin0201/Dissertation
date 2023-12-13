@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dissertation.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231212224524_init")]
-    partial class init
+    [Migration("20231212235446_admintest")]
+    partial class admintest
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,6 +44,22 @@ namespace Dissertation.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "0ece0674-22c1-4564-9c22-0bca1b5bc76a",
+                            ConcurrencyStamp = "1744ef3a-a652-4fd9-ab16-ad8736958fc5",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "83f97975-2d8c-438d-ae8d-06b82bde7c3d",
+                            ConcurrencyStamp = "ad39b48e-c043-4463-89b5-9da196f93379",
+                            Name = "Customer",
+                            NormalizedName = "CUSTOMER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -131,6 +147,24 @@ namespace Dissertation.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "a473aee9-03ea-4eab-8b15-8ac5eff16e83",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "2563d26e-afe9-48fb-8702-ed2f9f04fc36",
+                            Email = "admin@admin.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@ADMIN.COM",
+                            NormalizedUserName = "ADMIN@ADMIN.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEL61oq4nWjJ6YQrJ0KCr517tsIsPLnhP6e8zccPcxOJ18qYb614G7X+MihDsTyXRQA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "0ab3081c-19bd-4d22-9fea-46f54e18fe86",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@admin.com"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -191,6 +225,13 @@ namespace Dissertation.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "a473aee9-03ea-4eab-8b15-8ac5eff16e83",
+                            RoleId = "0ece0674-22c1-4564-9c22-0bca1b5bc76a"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
