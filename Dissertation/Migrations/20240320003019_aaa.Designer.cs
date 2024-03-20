@@ -11,14 +11,62 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dissertation.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231212235446_admintest")]
-    partial class admintest
+    [Migration("20240320003019_aaa")]
+    partial class aaa
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
+
+            modelBuilder.Entity("Dissertation.Models.Item", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Items");
+                });
+
+            modelBuilder.Entity("Dissertation.Models.Rent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("LoanLength")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RenterId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItemId");
+
+                    b.HasIndex("RenterId");
+
+                    b.ToTable("Rents");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -48,17 +96,17 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0ece0674-22c1-4564-9c22-0bca1b5bc76a",
-                            ConcurrencyStamp = "1744ef3a-a652-4fd9-ab16-ad8736958fc5",
+                            Id = "011a165e-b105-49f9-9443-ac318977f7cc",
+                            ConcurrencyStamp = "3f541949-8bcc-476d-aa11-1930142e2ebb",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "83f97975-2d8c-438d-ae8d-06b82bde7c3d",
-                            ConcurrencyStamp = "ad39b48e-c043-4463-89b5-9da196f93379",
-                            Name = "Customer",
-                            NormalizedName = "CUSTOMER"
+                            Id = "aa574bc2-91f6-4db7-ac34-a4bbe432e1af",
+                            ConcurrencyStamp = "501e5d06-4c31-4771-8fc7-ec567b840a75",
+                            Name = "Member",
+                            NormalizedName = "MEMBER"
                         });
                 });
 
@@ -151,19 +199,19 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a473aee9-03ea-4eab-8b15-8ac5eff16e83",
+                            Id = "a27189a2-c0d3-455d-be00-84e1755df9e0",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2563d26e-afe9-48fb-8702-ed2f9f04fc36",
-                            Email = "admin@admin.com",
+                            ConcurrencyStamp = "ba7050ad-46ab-47c3-8064-d3baaf54d6eb",
+                            Email = "admin@test.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN@ADMIN.COM",
-                            NormalizedUserName = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEL61oq4nWjJ6YQrJ0KCr517tsIsPLnhP6e8zccPcxOJ18qYb614G7X+MihDsTyXRQA==",
+                            NormalizedEmail = "ADMIN@TEST.COM",
+                            NormalizedUserName = "ADMIN@TEST.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAELIksUy+ZzlYYoPL2AJHVCdEIplbaU8YMWdXwxIF0TRhRIuuwJLtLHkCyJi1jMb2jQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "0ab3081c-19bd-4d22-9fea-46f54e18fe86",
+                            SecurityStamp = "289ad7d3-361f-4846-ae7c-89cae8abb36c",
                             TwoFactorEnabled = false,
-                            UserName = "admin@admin.com"
+                            UserName = "admin@test.com"
                         });
                 });
 
@@ -229,8 +277,13 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "a473aee9-03ea-4eab-8b15-8ac5eff16e83",
-                            RoleId = "0ece0674-22c1-4564-9c22-0bca1b5bc76a"
+                            UserId = "a27189a2-c0d3-455d-be00-84e1755df9e0",
+                            RoleId = "011a165e-b105-49f9-9443-ac318977f7cc"
+                        },
+                        new
+                        {
+                            UserId = "a27189a2-c0d3-455d-be00-84e1755df9e0",
+                            RoleId = "aa574bc2-91f6-4db7-ac34-a4bbe432e1af"
                         });
                 });
 
@@ -251,6 +304,25 @@ namespace Dissertation.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Dissertation.Models.Rent", b =>
+                {
+                    b.HasOne("Dissertation.Models.Item", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Renter")
+                        .WithMany()
+                        .HasForeignKey("RenterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Item");
+
+                    b.Navigation("Renter");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

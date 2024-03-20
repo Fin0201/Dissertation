@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Dissertation.Migrations
 {
     /// <inheritdoc />
-    public partial class admintest : Migration
+    public partial class aaa : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -50,6 +50,20 @@ namespace Dissertation.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Items",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Items", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -158,24 +172,56 @@ namespace Dissertation.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Rents",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ItemId = table.Column<int>(type: "INTEGER", nullable: false),
+                    RenterId = table.Column<string>(type: "TEXT", nullable: false),
+                    LoanLength = table.Column<string>(type: "TEXT", nullable: false),
+                    TimeStamp = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Rents", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Rents_AspNetUsers_RenterId",
+                        column: x => x.RenterId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Rents_Items_ItemId",
+                        column: x => x.ItemId,
+                        principalTable: "Items",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "0ece0674-22c1-4564-9c22-0bca1b5bc76a", "1744ef3a-a652-4fd9-ab16-ad8736958fc5", "Admin", "ADMIN" },
-                    { "83f97975-2d8c-438d-ae8d-06b82bde7c3d", "ad39b48e-c043-4463-89b5-9da196f93379", "Customer", "CUSTOMER" }
+                    { "011a165e-b105-49f9-9443-ac318977f7cc", "3f541949-8bcc-476d-aa11-1930142e2ebb", "Admin", "ADMIN" },
+                    { "aa574bc2-91f6-4db7-ac34-a4bbe432e1af", "501e5d06-4c31-4771-8fc7-ec567b840a75", "Member", "MEMBER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "a473aee9-03ea-4eab-8b15-8ac5eff16e83", 0, "2563d26e-afe9-48fb-8702-ed2f9f04fc36", "admin@admin.com", false, false, null, "ADMIN@ADMIN.COM", "ADMIN@ADMIN.COM", "AQAAAAIAAYagAAAAEL61oq4nWjJ6YQrJ0KCr517tsIsPLnhP6e8zccPcxOJ18qYb614G7X+MihDsTyXRQA==", null, false, "0ab3081c-19bd-4d22-9fea-46f54e18fe86", false, "admin@admin.com" });
+                values: new object[] { "a27189a2-c0d3-455d-be00-84e1755df9e0", 0, "ba7050ad-46ab-47c3-8064-d3baaf54d6eb", "admin@test.com", false, false, null, "ADMIN@TEST.COM", "ADMIN@TEST.COM", "AQAAAAIAAYagAAAAELIksUy+ZzlYYoPL2AJHVCdEIplbaU8YMWdXwxIF0TRhRIuuwJLtLHkCyJi1jMb2jQ==", null, false, "289ad7d3-361f-4846-ae7c-89cae8abb36c", false, "admin@test.com" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "0ece0674-22c1-4564-9c22-0bca1b5bc76a", "a473aee9-03ea-4eab-8b15-8ac5eff16e83" });
+                values: new object[,]
+                {
+                    { "011a165e-b105-49f9-9443-ac318977f7cc", "a27189a2-c0d3-455d-be00-84e1755df9e0" },
+                    { "aa574bc2-91f6-4db7-ac34-a4bbe432e1af", "a27189a2-c0d3-455d-be00-84e1755df9e0" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -213,6 +259,16 @@ namespace Dissertation.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rents_ItemId",
+                table: "Rents",
+                column: "ItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rents_RenterId",
+                table: "Rents",
+                column: "RenterId");
         }
 
         /// <inheritdoc />
@@ -234,10 +290,16 @@ namespace Dissertation.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Rents");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Items");
         }
     }
 }
