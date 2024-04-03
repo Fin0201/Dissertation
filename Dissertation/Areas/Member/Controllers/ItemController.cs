@@ -61,21 +61,22 @@ namespace Dissertation.Areas.Member.Views
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description")] Item item)
+        public async Task<IActionResult> Create(Item item)
         {
-            //Console.WriteLine("errrm");
-            if (ModelState.IsValid)
+            if (item.Name != null &&
+               item.Description != null &&
+               item.MaxDays != null)
             {
-                //Console.WriteLine("valid");
-                //var userAccount = await _userManager.FindByNameAsync(User.Identity.Name);
-                //if (userAccount == null)
-                //{
-                //    return NotFound();
-                //}
-
-                //item.Loaner = userAccount;
-                _context.Add(item);
+                var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+                if (currentUser == null)
+                {
+                    return NotFound();
+                }
+                item.Loaner = currentUser;
+                item.LoanerId = currentUser.Id;
+                _context.Items.Add(item);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             return View(item);

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Dissertation.Migrations
 {
     /// <inheritdoc />
-    public partial class aaa : Migration
+    public partial class aaaa : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -50,20 +50,6 @@ namespace Dissertation.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Items",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Items", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -173,6 +159,28 @@ namespace Dissertation.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Items",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: false),
+                    MaxDays = table.Column<string>(type: "TEXT", nullable: false),
+                    LoanerId = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Items", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Items_AspNetUsers_LoanerId",
+                        column: x => x.LoanerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Rents",
                 columns: table => new
                 {
@@ -205,22 +213,22 @@ namespace Dissertation.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "011a165e-b105-49f9-9443-ac318977f7cc", "3f541949-8bcc-476d-aa11-1930142e2ebb", "Admin", "ADMIN" },
-                    { "aa574bc2-91f6-4db7-ac34-a4bbe432e1af", "501e5d06-4c31-4771-8fc7-ec567b840a75", "Member", "MEMBER" }
+                    { "5243b65e-c826-4f06-a7b5-7f65bc32fe13", "82f30716-b353-46b4-ae4d-21340f81794e", "Member", "MEMBER" },
+                    { "63449daf-84cb-4447-b876-cf65923ab478", "3eb1c016-f852-4272-afff-527b3d586d06", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "a27189a2-c0d3-455d-be00-84e1755df9e0", 0, "ba7050ad-46ab-47c3-8064-d3baaf54d6eb", "admin@test.com", false, false, null, "ADMIN@TEST.COM", "ADMIN@TEST.COM", "AQAAAAIAAYagAAAAELIksUy+ZzlYYoPL2AJHVCdEIplbaU8YMWdXwxIF0TRhRIuuwJLtLHkCyJi1jMb2jQ==", null, false, "289ad7d3-361f-4846-ae7c-89cae8abb36c", false, "admin@test.com" });
+                values: new object[] { "31026f08-1ee0-4e55-ae26-dda35ed6bf8f", 0, "b323e8e5-afc4-4e98-b009-61b74d260315", "admin@test.com", false, false, null, "ADMIN@TEST.COM", "ADMIN@TEST.COM", "AQAAAAIAAYagAAAAEL/NDtlizKn1B5y5U9KnQaLfx7esDL0aLgfKzQUF8X0aW0KA/rj1B3sWzHy+7N6BLQ==", null, false, "1e9d4159-0355-4915-9a32-ae539c2bcae8", false, "admin@test.com" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { "011a165e-b105-49f9-9443-ac318977f7cc", "a27189a2-c0d3-455d-be00-84e1755df9e0" },
-                    { "aa574bc2-91f6-4db7-ac34-a4bbe432e1af", "a27189a2-c0d3-455d-be00-84e1755df9e0" }
+                    { "5243b65e-c826-4f06-a7b5-7f65bc32fe13", "31026f08-1ee0-4e55-ae26-dda35ed6bf8f" },
+                    { "63449daf-84cb-4447-b876-cf65923ab478", "31026f08-1ee0-4e55-ae26-dda35ed6bf8f" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -261,6 +269,11 @@ namespace Dissertation.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Items_LoanerId",
+                table: "Items",
+                column: "LoanerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Rents_ItemId",
                 table: "Rents",
                 column: "ItemId");
@@ -296,10 +309,10 @@ namespace Dissertation.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Items");
 
             migrationBuilder.DropTable(
-                name: "Items");
+                name: "AspNetUsers");
         }
     }
 }

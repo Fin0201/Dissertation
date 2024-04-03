@@ -15,13 +15,13 @@ namespace Dissertation.Models
         [Required]
         public string Description { get; set; }
 
-        // [Required]
-        // public string MaxDays { get; set; }
+        [Required]
+        public string MaxDays { get; set; }
 
-        // [ForeignKey("LoanerId")]
-        // public IdentityUser Loaner { get; set; }
+        [ForeignKey("LoanerId")]
+        public IdentityUser Loaner { get; set; }
 
-        // [Required]
-        // public string LoanerId { get; set; }
+        [Required]
+        public string LoanerId { get; set; }
     }
 }

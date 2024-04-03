@@ -17,4 +17,16 @@ ai stuff
 
 change Dissertation name
 
+make MaxDays work for item model
+
 also change the change the original namespaceas
+
+
+
+Check the class schedule controller list implementeation for implementing the current use into items controller
+
+
+
+https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=vs
+Add-Migration InitialCreate
+Update-Database

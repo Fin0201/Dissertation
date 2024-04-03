@@ -27,11 +27,21 @@ namespace Dissertation.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("LoanerId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MaxDays")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LoanerId");
 
                     b.ToTable("Items");
                 });
@@ -93,15 +103,15 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "011a165e-b105-49f9-9443-ac318977f7cc",
-                            ConcurrencyStamp = "3f541949-8bcc-476d-aa11-1930142e2ebb",
+                            Id = "63449daf-84cb-4447-b876-cf65923ab478",
+                            ConcurrencyStamp = "3eb1c016-f852-4272-afff-527b3d586d06",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "aa574bc2-91f6-4db7-ac34-a4bbe432e1af",
-                            ConcurrencyStamp = "501e5d06-4c31-4771-8fc7-ec567b840a75",
+                            Id = "5243b65e-c826-4f06-a7b5-7f65bc32fe13",
+                            ConcurrencyStamp = "82f30716-b353-46b4-ae4d-21340f81794e",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         });
@@ -196,17 +206,17 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a27189a2-c0d3-455d-be00-84e1755df9e0",
+                            Id = "31026f08-1ee0-4e55-ae26-dda35ed6bf8f",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ba7050ad-46ab-47c3-8064-d3baaf54d6eb",
+                            ConcurrencyStamp = "b323e8e5-afc4-4e98-b009-61b74d260315",
                             Email = "admin@test.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@TEST.COM",
                             NormalizedUserName = "ADMIN@TEST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAELIksUy+ZzlYYoPL2AJHVCdEIplbaU8YMWdXwxIF0TRhRIuuwJLtLHkCyJi1jMb2jQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEL/NDtlizKn1B5y5U9KnQaLfx7esDL0aLgfKzQUF8X0aW0KA/rj1B3sWzHy+7N6BLQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "289ad7d3-361f-4846-ae7c-89cae8abb36c",
+                            SecurityStamp = "1e9d4159-0355-4915-9a32-ae539c2bcae8",
                             TwoFactorEnabled = false,
                             UserName = "admin@test.com"
                         });
@@ -274,13 +284,13 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "a27189a2-c0d3-455d-be00-84e1755df9e0",
-                            RoleId = "011a165e-b105-49f9-9443-ac318977f7cc"
+                            UserId = "31026f08-1ee0-4e55-ae26-dda35ed6bf8f",
+                            RoleId = "63449daf-84cb-4447-b876-cf65923ab478"
                         },
                         new
                         {
-                            UserId = "a27189a2-c0d3-455d-be00-84e1755df9e0",
-                            RoleId = "aa574bc2-91f6-4db7-ac34-a4bbe432e1af"
+                            UserId = "31026f08-1ee0-4e55-ae26-dda35ed6bf8f",
+                            RoleId = "5243b65e-c826-4f06-a7b5-7f65bc32fe13"
                         });
                 });
 
@@ -301,6 +311,17 @@ namespace Dissertation.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Dissertation.Models.Item", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Loaner")
+                        .WithMany()
+                        .HasForeignKey("LoanerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Loaner");
                 });
 
             modelBuilder.Entity("Dissertation.Models.Rent", b =>
