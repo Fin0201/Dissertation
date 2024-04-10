@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dissertation.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240403021224_aaaa")]
-    partial class aaaa
+    [Migration("20240410123031_M1")]
+    partial class M1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,9 @@ namespace Dissertation.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CurrentStock")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
@@ -41,6 +44,12 @@ namespace Dissertation.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalStock")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -106,15 +115,15 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "63449daf-84cb-4447-b876-cf65923ab478",
-                            ConcurrencyStamp = "3eb1c016-f852-4272-afff-527b3d586d06",
+                            Id = "be333b0f-23cb-4e3e-908a-ed2df5540795",
+                            ConcurrencyStamp = "e4d8208f-dd9c-4cad-9b5a-30e2565b7280",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "5243b65e-c826-4f06-a7b5-7f65bc32fe13",
-                            ConcurrencyStamp = "82f30716-b353-46b4-ae4d-21340f81794e",
+                            Id = "53d58594-977a-4145-bd76-5692d519397e",
+                            ConcurrencyStamp = "93f56c1d-2f66-4757-bd32-77ccf0ea4fd4",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         });
@@ -209,17 +218,17 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "31026f08-1ee0-4e55-ae26-dda35ed6bf8f",
+                            Id = "5576cdd4-be23-4e66-a000-7445e5069042",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b323e8e5-afc4-4e98-b009-61b74d260315",
+                            ConcurrencyStamp = "d1829241-e832-4f80-98e3-c09a156da36b",
                             Email = "admin@test.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@TEST.COM",
                             NormalizedUserName = "ADMIN@TEST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEL/NDtlizKn1B5y5U9KnQaLfx7esDL0aLgfKzQUF8X0aW0KA/rj1B3sWzHy+7N6BLQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECaAzt0c5IeGyDFIt72nzNZDVq+S272xz8CICXUrnuU7B7oKJBJcMzQ7jtD0iVjWUg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "1e9d4159-0355-4915-9a32-ae539c2bcae8",
+                            SecurityStamp = "ec2e70c6-4ac5-451a-87ab-ed6651fdb797",
                             TwoFactorEnabled = false,
                             UserName = "admin@test.com"
                         });
@@ -287,13 +296,13 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "31026f08-1ee0-4e55-ae26-dda35ed6bf8f",
-                            RoleId = "63449daf-84cb-4447-b876-cf65923ab478"
+                            UserId = "5576cdd4-be23-4e66-a000-7445e5069042",
+                            RoleId = "be333b0f-23cb-4e3e-908a-ed2df5540795"
                         },
                         new
                         {
-                            UserId = "31026f08-1ee0-4e55-ae26-dda35ed6bf8f",
-                            RoleId = "5243b65e-c826-4f06-a7b5-7f65bc32fe13"
+                            UserId = "5576cdd4-be23-4e66-a000-7445e5069042",
+                            RoleId = "53d58594-977a-4145-bd76-5692d519397e"
                         });
                 });
 

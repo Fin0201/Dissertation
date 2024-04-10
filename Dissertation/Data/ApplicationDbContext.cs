@@ -26,7 +26,6 @@ namespace Dissertation.Data
             SeedRoles(builder);
             SeedAdmin(builder);
             SeedUserRoles(builder);
-
         }
 
         private void SeedRoles(ModelBuilder builder)
@@ -65,7 +64,6 @@ namespace Dissertation.Data
             user.ConcurrencyStamp = Guid.NewGuid().ToString();
             user.PasswordHash = hasher.HashPassword(user, "P@ssword1");
             builder.Entity<IdentityUser>().HasData(user);
-
         }
 
         private void SeedUserRoles(ModelBuilder builder)

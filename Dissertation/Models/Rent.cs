@@ -19,7 +19,7 @@ namespace Dissertation.Models
         public IdentityUser Renter { get; set; }
 
         [Required]
-        public string RenterId { get; set; } // This will store the user account attending the class
+        public string RenterId { get; set; }
 
         [Required]
         public string LoanLength { get; set; }

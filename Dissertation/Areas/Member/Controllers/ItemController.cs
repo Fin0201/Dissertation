@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Dissertation.Data;
 using Dissertation.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
 namespace Dissertation.Areas.Member.Views
@@ -65,15 +59,18 @@ namespace Dissertation.Areas.Member.Views
         {
             if (item.Name != null &&
                item.Description != null &&
-               item.MaxDays != null)
+               item.MaxDays != null &&
+               item.TotalStock != null)
             {
                 var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
                 if (currentUser == null)
                 {
                     return NotFound();
                 }
+
                 item.Loaner = currentUser;
                 item.LoanerId = currentUser.Id;
+
                 _context.Items.Add(item);
                 await _context.SaveChangesAsync();
 

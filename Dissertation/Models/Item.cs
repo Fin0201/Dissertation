@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static Dissertation.Models.Enums;
 
 namespace Dissertation.Models
 {
@@ -17,6 +18,15 @@ namespace Dissertation.Models
 
         [Required]
         public string MaxDays { get; set; }
+
+        [Required]
+        public int TotalStock { get; set; }
+
+        [Required]
+        public int CurrentStock { get; set; }
+
+        [Required]
+        public ItemStatus Status { get; set; }
 
         [ForeignKey("LoanerId")]
         public IdentityUser Loaner { get; set; }

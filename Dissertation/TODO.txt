@@ -25,6 +25,17 @@ also change the change the original namespaceas
 
 Check the class schedule controller list implementeation for implementing the current use into items controller
 
+Home page use AI to suggest items
+
+modelstate is valid or make sure invalid var types rent accepted.
+
+check quantity is int and a value of 0 is not acceppted.
+
+Check is the modelstate is validin the controller after adding ht euser account to the model
+
+
+Fix Bootswatch
+
 
 
 https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=vs

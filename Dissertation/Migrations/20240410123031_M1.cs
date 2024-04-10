@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Dissertation.Migrations
 {
     /// <inheritdoc />
-    public partial class aaaa : Migration
+    public partial class M1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -167,6 +167,9 @@ namespace Dissertation.Migrations
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
                     MaxDays = table.Column<string>(type: "TEXT", nullable: false),
+                    TotalStock = table.Column<int>(type: "INTEGER", nullable: false),
+                    CurrentStock = table.Column<int>(type: "INTEGER", nullable: false),
+                    Status = table.Column<int>(type: "INTEGER", nullable: false),
                     LoanerId = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -213,22 +216,22 @@ namespace Dissertation.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "5243b65e-c826-4f06-a7b5-7f65bc32fe13", "82f30716-b353-46b4-ae4d-21340f81794e", "Member", "MEMBER" },
-                    { "63449daf-84cb-4447-b876-cf65923ab478", "3eb1c016-f852-4272-afff-527b3d586d06", "Admin", "ADMIN" }
+                    { "53d58594-977a-4145-bd76-5692d519397e", "93f56c1d-2f66-4757-bd32-77ccf0ea4fd4", "Member", "MEMBER" },
+                    { "be333b0f-23cb-4e3e-908a-ed2df5540795", "e4d8208f-dd9c-4cad-9b5a-30e2565b7280", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "31026f08-1ee0-4e55-ae26-dda35ed6bf8f", 0, "b323e8e5-afc4-4e98-b009-61b74d260315", "admin@test.com", false, false, null, "ADMIN@TEST.COM", "ADMIN@TEST.COM", "AQAAAAIAAYagAAAAEL/NDtlizKn1B5y5U9KnQaLfx7esDL0aLgfKzQUF8X0aW0KA/rj1B3sWzHy+7N6BLQ==", null, false, "1e9d4159-0355-4915-9a32-ae539c2bcae8", false, "admin@test.com" });
+                values: new object[] { "5576cdd4-be23-4e66-a000-7445e5069042", 0, "d1829241-e832-4f80-98e3-c09a156da36b", "admin@test.com", false, false, null, "ADMIN@TEST.COM", "ADMIN@TEST.COM", "AQAAAAIAAYagAAAAECaAzt0c5IeGyDFIt72nzNZDVq+S272xz8CICXUrnuU7B7oKJBJcMzQ7jtD0iVjWUg==", null, false, "ec2e70c6-4ac5-451a-87ab-ed6651fdb797", false, "admin@test.com" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { "5243b65e-c826-4f06-a7b5-7f65bc32fe13", "31026f08-1ee0-4e55-ae26-dda35ed6bf8f" },
-                    { "63449daf-84cb-4447-b876-cf65923ab478", "31026f08-1ee0-4e55-ae26-dda35ed6bf8f" }
+                    { "53d58594-977a-4145-bd76-5692d519397e", "5576cdd4-be23-4e66-a000-7445e5069042" },
+                    { "be333b0f-23cb-4e3e-908a-ed2df5540795", "5576cdd4-be23-4e66-a000-7445e5069042" }
                 });
 
             migrationBuilder.CreateIndex(
