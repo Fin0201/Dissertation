@@ -17,21 +17,29 @@ namespace Dissertation.Models
         public string Description { get; set; }
 
         [Required]
-        public string MaxDays { get; set; }
+        public int MaxDays { get; set; }
 
         [Required]
         public int TotalStock { get; set; }
 
-        [Required]
         public int CurrentStock { get; set; }
 
-        [Required]
+        /*public List<string> ImagePaths { get; set; }*/
+
+        public string? ImageFilename { get; set; } // Not storing full path because HTML and C# require slightly different paths to access the same file.
+
         public ItemStatus Status { get; set; }
 
-        [ForeignKey("LoanerId")]
-        public IdentityUser Loaner { get; set; }
-
         [Required]
-        public string LoanerId { get; set; }
+        public ItemCategory Category { get; set; }
+
+        public string? LoanerId { get; set; }
+
+        [ForeignKey("LoanerId")]
+        public IdentityUser? Loaner { get; set; }
+
+        public DateTime AddedOn { get; set; }
+
+        public DateTime ModifiedOn { get; set; }
     }
 }

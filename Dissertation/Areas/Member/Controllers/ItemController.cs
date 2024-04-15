@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Dissertation.Data;
-using Dissertation.Models;
 using Microsoft.AspNetCore.Identity;
+using Dissertation.Models;
+using Dissertation.Data;
 
 namespace Dissertation.Areas.Member.Views
 {
@@ -55,28 +55,50 @@ namespace Dissertation.Areas.Member.Views
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Item item)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,MaxDays,TotalStock,Category")] Item item, IFormFile imageFile)
         {
-            if (item.Name != null &&
-               item.Description != null &&
-               item.MaxDays != null &&
-               item.TotalStock != null)
+            var currentUserId = _userManager.GetUserId(User);
+            if (currentUserId == null)
             {
-                var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
-                if (currentUser == null)
-                {
-                    return NotFound();
-                }
-
-                item.Loaner = currentUser;
-                item.LoanerId = currentUser.Id;
-
-                _context.Items.Add(item);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            return View(item);
+
+            if (!ModelState.IsValid)
+            {
+                return View(item);
+            }
+
+            if (imageFile == null || imageFile.Length == 0)
+            {
+                return View(item);
+            }
+
+            string fileExtension = Path.GetExtension(imageFile.FileName);
+            string fileName = Guid.NewGuid().ToString() + fileExtension;
+            string basePath = "wwwroot/images/user-uploads";
+            string imagePath = Path.Combine(basePath, fileName);
+
+            if (!Directory.Exists(basePath))
+            {
+                Directory.CreateDirectory(basePath);
+            }
+
+            using (var stream = new FileStream(imagePath, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(stream);
+            }
+
+            item.CurrentStock = item.TotalStock;
+            item.LoanerId = currentUserId;
+            item.Status = Enums.ItemStatus.Available;
+            item.ImageFilename = fileName;
+            item.AddedOn = DateTime.Now;
+            item.ModifiedOn = DateTime.Now;
+
+            _context.Add(item);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Member/Item/Edit/5
@@ -100,34 +122,73 @@ namespace Dissertation.Areas.Member.Views
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Item Item)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,MaxDays,TotalStock,Category")] Item item, IFormFile imageFile)
         {
-            if (id != Item.Id)
+            if (id != item.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            var existingItem = await _context.Items.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+            if (existingItem == null)
             {
-                try
-                {
-                    _context.Update(Item);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ItemExists(Item.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            return View(Item);
+
+            if (imageFile == null)
+            {
+                ModelState.Remove("imageFile");
+                item.ImageFilename = existingItem.ImageFilename;
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(item);
+            }
+
+            item.CurrentStock = existingItem.CurrentStock;
+            item.AddedOn = existingItem.AddedOn;
+            item.ModifiedOn = DateTime.Now;
+            item.LoanerId = existingItem.LoanerId;
+
+            try
+            {
+                if (imageFile != null)
+                {
+                    string fileExtension = Path.GetExtension(imageFile.FileName);
+                    string fileName = Guid.NewGuid().ToString() + fileExtension;
+                    string basePath = "wwwroot/images/user-uploads";
+                    string imagePath = Path.Combine(basePath, fileName);
+
+                    string exististingImagePath = Path.Combine(basePath, existingItem.ImageFilename);
+                    if (System.IO.File.Exists(exististingImagePath))
+                    {
+                        System.IO.File.Delete(exististingImagePath);
+                    }
+
+                    using (var stream = new FileStream(imagePath, FileMode.Create))
+                    {
+                        await imageFile.CopyToAsync(stream);
+                    }
+
+                    item.ImageFilename = fileName;
+                }
+
+                _context.Update(item);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ItemExists(item.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Member/Item/Delete/5
@@ -155,12 +216,24 @@ namespace Dissertation.Areas.Member.Views
         {
             if (_context.Items == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.Items'  is null.");
+                return Problem("Entity set 'ApplicationDbContext.Items' is null.");
             }
-            var Item = await _context.Items.FindAsync(id);
-            if (Item != null)
+            var item = await _context.Items.FindAsync(id);
+            if (item != null)
             {
-                _context.Items.Remove(Item);
+                try
+                {
+                    string exististingFullPath = Path.Combine("wwwroot/images/user-uploads", item.ImageFilename);
+                    if (System.IO.File.Exists(exististingFullPath))
+                    {
+                        System.IO.File.Delete(exististingFullPath);
+                    }
+                }
+                catch
+                {
+                    return NotFound();
+                }
+                _context.Items.Remove(item);
             }
 
             await _context.SaveChangesAsync();

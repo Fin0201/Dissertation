@@ -10,6 +10,7 @@ namespace Dissertation.Data
         string AdminRoleId = Guid.NewGuid().ToString();
         string MemberRoleId = Guid.NewGuid().ToString();
         string AdminId = Guid.NewGuid().ToString();
+        string MemberId = Guid.NewGuid().ToString();
 
         public DbSet<Item> Items { get; set; }
         public DbSet<Rent> Rents { get; set; }
@@ -17,7 +18,6 @@ namespace Dissertation.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
-
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -25,6 +25,7 @@ namespace Dissertation.Data
             base.OnModelCreating(builder);
             SeedRoles(builder);
             SeedAdmin(builder);
+            SeedMember(builder);
             SeedUserRoles(builder);
         }
 
@@ -66,6 +67,21 @@ namespace Dissertation.Data
             builder.Entity<IdentityUser>().HasData(user);
         }
 
+        private void SeedMember(ModelBuilder builder)
+        {
+            PasswordHasher<IdentityUser> hasher = new PasswordHasher<IdentityUser>();
+            IdentityUser user = new IdentityUser();
+            user.Id = MemberId;
+            user.UserName = "member@test.com";
+            user.NormalizedUserName = "member@test.com".ToUpper();
+            user.NormalizedEmail = "member@test.com".ToUpper();
+            user.Email = "member@test.com";
+            user.LockoutEnabled = false;
+            user.ConcurrencyStamp = Guid.NewGuid().ToString();
+            user.PasswordHash = hasher.HashPassword(user, "P@ssword1");
+            builder.Entity<IdentityUser>().HasData(user);
+        }
+
         private void SeedUserRoles(ModelBuilder builder)
         {
             builder.Entity<IdentityUserRole<string>>().HasData(
@@ -80,6 +96,13 @@ namespace Dissertation.Data
                 {
                     RoleId = MemberRoleId,
                     UserId = AdminId
+                });
+
+            builder.Entity<IdentityUserRole<string>>().HasData(
+                new IdentityUserRole<string>()
+                {
+                    RoleId = MemberRoleId,
+                    UserId = MemberId
                 });
         }
     }

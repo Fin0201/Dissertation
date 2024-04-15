@@ -15,14 +15,14 @@ namespace Dissertation.Models
         [Required]
         public int ItemId { get; set; }
 
-        [ForeignKey("RenterId")]
-        public IdentityUser Renter { get; set; }
-
         [Required]
         public string RenterId { get; set; }
 
+        [ForeignKey("RenterId")]
+        public IdentityUser? Renter { get; set; }
+
         [Required]
-        public string LoanLength { get; set; }
+        public int LoanLength { get; set; }
 
         [Required]
         public DateTime TimeStamp { get; set; }

@@ -1,7 +1,21 @@
-﻿@model IEnumerable<Dissertation.Models.Item>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> signInManager
+@inject UserManager<IdentityUser> userManager
+@model IEnumerable<Dissertation.Models.Item>
 
 @{
     ViewData["Title"] = "Item Manager";
+    string userId = "";
+    bool isAdmin = false;
+}
+
+@if (signInManager.IsSignedIn(User))
+{
+    userId = userManager.GetUserId(User);
+    @if (await userManager.IsInRoleAsync(await userManager.GetUserAsync(User), "Admin"))
+    {
+        isAdmin = true;
+    }
 }
 
 <h1>Manage Item</h1>
@@ -20,6 +34,27 @@
             <th>
                 @Html.DisplayNameFor(model => model.Description)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MaxDays)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalStock)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AddedOn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ModifiedOn)
+            </th>
+            <th>
+                Image
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -35,9 +70,38 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                @Html.DisplayFor(modelItem => item.MaxDays)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalStock)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AddedOn)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ModifiedOn)
+            </td>
+            <td>
+                <img src="/images/user-uploads/@Html.DisplayFor(modelItem => item.ImageFilename)" alt="Item image" style="width: 100px; height: auto;" />
+            </td>
+            <td>
+                @if (userId == item.LoanerId || isAdmin)
+                {
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
+                    <text>|</text>
+                }
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
+                @if (userId == item.LoanerId || isAdmin)
+                {
+                    <text>|</text>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                }
             </td>
         </tr>
 }

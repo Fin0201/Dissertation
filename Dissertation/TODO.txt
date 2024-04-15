@@ -33,11 +33,35 @@ check quantity is int and a value of 0 is not acceppted.
 
 Check is the modelstate is validin the controller after adding ht euser account to the model
 
+Give admins the option to add item types like roles
+
+Update navbars
+
+Update what is displayed on view indexes
+
+Actually implement the status thing
+
 
 Fix Bootswatch
 
+clean up all of the string? and = "" stuff in the models. make it consistant also [Required]
+Current stock is not ? and is required but doesnt show up on isvalid
 
+Make sure image upload oinly accepts images (if it doesnt already, add a whitelist for file extensions or search for another solution)
+
+
+CHANGE NAMES so they are Max Days instead of MaxDays
+
+Only allow specific members to edit their own items
+
+Comments
+
+Change temp name of Gadget Loaner
+
+Favicon
 
 https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=vs
 Add-Migration InitialCreate
 Update-Database
+
+System.Diagnostics.Debug.WriteLine();

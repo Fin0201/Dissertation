@@ -7,5 +7,13 @@
             Available,
             Unavailable
         }
+
+        public enum ItemCategory
+        {
+            Drone,
+            Camera,
+            Tablet,
+            Other
+        }
     }
 }
