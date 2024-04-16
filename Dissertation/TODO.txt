@@ -60,6 +60,8 @@ Change temp name of Gadget Loaner
 
 Favicon
 
+Change what is and isnt member only
+
 https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=vs
 Add-Migration InitialCreate
 Update-Database

@@ -41,6 +41,7 @@
             <div class="form-group mt-2">
                 <label class="control-label">Upload Image</label>
                 <input type="file" name="imageFile" class="form-control" />
+                <span class="text-danger">@Html.ValidationMessage("ImageFile")</span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

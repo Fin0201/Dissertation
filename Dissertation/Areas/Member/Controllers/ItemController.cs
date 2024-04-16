@@ -11,6 +11,8 @@ namespace Dissertation.Areas.Member.Views
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly string[] allowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".jfif"];
+
 
         public ItemController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
@@ -68,12 +70,13 @@ namespace Dissertation.Areas.Member.Views
                 return View(item);
             }
 
-            if (imageFile == null || imageFile.Length == 0)
+            string fileExtension = Path.GetExtension(imageFile.FileName);
+            if (!allowedExtensions.Contains(fileExtension))
             {
+                ModelState.AddModelError("ImageFile", "Invalid file type. Only JPG, JPEG, PNG, GIF, BMP, WebP, and JFIF files are allowed.");
                 return View(item);
             }
-
-            string fileExtension = Path.GetExtension(imageFile.FileName);
+            
             string fileName = Guid.NewGuid().ToString() + fileExtension;
             string basePath = "wwwroot/images/user-uploads";
             string imagePath = Path.Combine(basePath, fileName);
@@ -156,11 +159,17 @@ namespace Dissertation.Areas.Member.Views
                 if (imageFile != null)
                 {
                     string fileExtension = Path.GetExtension(imageFile.FileName);
+                    if (!allowedExtensions.Contains(fileExtension))
+                    {
+                        ModelState.AddModelError("ImageFile", "Invalid file type. Only JPG, JPEG, PNG, GIF, BMP, WebP, and JFIF files are allowed.");
+                        return View(item);
+                    }
+
                     string fileName = Guid.NewGuid().ToString() + fileExtension;
                     string basePath = "wwwroot/images/user-uploads";
                     string imagePath = Path.Combine(basePath, fileName);
-
                     string exististingImagePath = Path.Combine(basePath, existingItem.ImageFilename);
+
                     if (System.IO.File.Exists(exististingImagePath))
                     {
                         System.IO.File.Delete(exististingImagePath);
