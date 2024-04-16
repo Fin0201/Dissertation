@@ -14,6 +14,9 @@ namespace Dissertation.Data
 
         public DbSet<Item> Items { get; set; }
         public DbSet<Rent> Rents { get; set; }
+        public DbSet<Chat> Chats { get; set; }
+        public DbSet<MessageNotification> MessageNotifications { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

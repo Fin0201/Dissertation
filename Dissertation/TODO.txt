@@ -62,6 +62,13 @@ Favicon
 
 Change what is and isnt member only
 
+Decide whether or not to keep TotalStock
+
+Test all
+
+
+Selenium
+
 https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=vs
 Add-Migration InitialCreate
 Update-Database

@@ -1,7 +1,7 @@
 using Dissertation.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-/*using SignalRChatMVC.Hubs;*/
+using Dissertation.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,5 +51,6 @@ app.MapControllerRoute(
     );
 
 app.MapRazorPages();
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();

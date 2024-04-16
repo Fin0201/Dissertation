@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FlexAppealFitness.Areas.Customer.Controllers
+namespace Dissertation.Areas.Member.Controllers
 {
     public class HomeController : Controller
     {

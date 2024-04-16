@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Dissertation.Models;
 using Dissertation.Data;
+using System.Security.Claims;
 
 namespace Dissertation.Areas.Member.Views
 {
@@ -112,12 +113,19 @@ namespace Dissertation.Areas.Member.Views
                 return NotFound();
             }
 
-            var Item = await _context.Items.FindAsync(id);
-            if (Item == null)
+            var item = await _context.Items.FindAsync(id);
+            if (item == null)
             {
                 return NotFound();
             }
-            return View(Item);
+
+            string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId != item.LoanerId && !User.IsInRole("Admin"))
+            {
+                return Unauthorized();
+            }
+
+            return View(item);
         }
 
         // POST: Member/Item/Edit/5
@@ -213,6 +221,12 @@ namespace Dissertation.Areas.Member.Views
             if (Item == null)
             {
                 return NotFound();
+            }
+
+            string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId != Item.LoanerId && !User.IsInRole("Admin"))
+            {
+                return Unauthorized();
             }
 
             return View(Item);

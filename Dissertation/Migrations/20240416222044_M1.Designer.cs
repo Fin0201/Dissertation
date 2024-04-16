@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dissertation.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240415212619_M1")]
+    [Migration("20240416222044_M1")]
     partial class M1
     {
         /// <inheritdoc />
@@ -19,6 +19,54 @@ namespace Dissertation.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
+
+            modelBuilder.Entity("Dissertation.Models.Chat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("BorrowerId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LoanerId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("StartedOn")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BorrowerId");
+
+                    b.HasIndex("LoanerId");
+
+                    b.ToTable("Chats");
+                });
+
+            modelBuilder.Entity("Dissertation.Models.ChatMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ChatId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("SenderId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("ChatMessages");
+                });
 
             modelBuilder.Entity("Dissertation.Models.Item", b =>
                 {
@@ -66,6 +114,25 @@ namespace Dissertation.Migrations
                     b.HasIndex("LoanerId");
 
                     b.ToTable("Items");
+                });
+
+            modelBuilder.Entity("Dissertation.Models.MessageNotification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ChatMessageId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("HasOpened")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatMessageId");
+
+                    b.ToTable("MessageNotifications");
                 });
 
             modelBuilder.Entity("Dissertation.Models.Rent", b =>
@@ -124,15 +191,15 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "ed4f73e4-80c5-4036-b2d9-404e98b26d1d",
-                            ConcurrencyStamp = "6541c20f-0d4c-46ef-9a05-000907441e2d",
+                            Id = "70b3286d-ce7b-4297-b4d7-5c4208d15e1c",
+                            ConcurrencyStamp = "c8153098-d46e-49cb-8a6b-1f756476879f",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "96d81db9-af9d-46bb-8e5d-590bf2b7705e",
-                            ConcurrencyStamp = "8116ce37-45b6-459b-a656-deb40434981b",
+                            Id = "ca607067-c69b-429b-b375-8d9a0d304b0a",
+                            ConcurrencyStamp = "8718f206-b35f-4c21-90e5-fc2812a0e703",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         });
@@ -227,33 +294,33 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "dea1d79d-7193-4441-bc19-02f86646183c",
+                            Id = "c8987864-0f7f-4b74-8b26-dd75f3fd9562",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "433f0a49-a1b6-4a09-8906-f796e0a317ef",
+                            ConcurrencyStamp = "aeaac8db-813f-4449-ae0e-4acbc9eb8320",
                             Email = "admin@test.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@TEST.COM",
                             NormalizedUserName = "ADMIN@TEST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEJ8QuvzRMowf/eGvnPCJ4S6PpIIqg+ASgF1gDtDwFnBnxzvbNQ7txksU1SsZOoywg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEK63AcCMM3t6cF4cOM/XOCqfsoPaNXaQMhk+IK/3jFbvL3H/lZrk5LJFOCCY66uUnQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "23bb32be-e9dc-4ae5-a4e2-2ea3370c93a4",
+                            SecurityStamp = "ccb91d62-8029-42cc-ba84-9b344a3493ed",
                             TwoFactorEnabled = false,
                             UserName = "admin@test.com"
                         },
                         new
                         {
-                            Id = "3c1e34e0-ba35-45ca-990a-77d2e09e0f42",
+                            Id = "f9ae9a38-a55f-4c24-ba13-25354e7adb05",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ebdc3c8c-a4ef-43e3-ad18-464bdcc2f832",
+                            ConcurrencyStamp = "5ea6de51-9e86-4bb6-94b3-27330f086181",
                             Email = "member@test.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "MEMBER@TEST.COM",
                             NormalizedUserName = "MEMBER@TEST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEF1+bqhmzm76FDGbklm2FeFatesziAZSUsNuk+qR/Iwv94jB1XereCVQjy4MWdPN3Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBhXOReOVb9cloLtmUQ5U+bgXH7adN9ZiJwG2ljAR+JvPTZgxBoY3og2JdlXZXuf7w==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "4aa8e886-b21c-458d-b42e-00271a8314ac",
+                            SecurityStamp = "7c978572-3053-48d9-9b9d-26c13afe6313",
                             TwoFactorEnabled = false,
                             UserName = "member@test.com"
                         });
@@ -321,18 +388,18 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "dea1d79d-7193-4441-bc19-02f86646183c",
-                            RoleId = "ed4f73e4-80c5-4036-b2d9-404e98b26d1d"
+                            UserId = "c8987864-0f7f-4b74-8b26-dd75f3fd9562",
+                            RoleId = "70b3286d-ce7b-4297-b4d7-5c4208d15e1c"
                         },
                         new
                         {
-                            UserId = "dea1d79d-7193-4441-bc19-02f86646183c",
-                            RoleId = "96d81db9-af9d-46bb-8e5d-590bf2b7705e"
+                            UserId = "c8987864-0f7f-4b74-8b26-dd75f3fd9562",
+                            RoleId = "ca607067-c69b-429b-b375-8d9a0d304b0a"
                         },
                         new
                         {
-                            UserId = "3c1e34e0-ba35-45ca-990a-77d2e09e0f42",
-                            RoleId = "96d81db9-af9d-46bb-8e5d-590bf2b7705e"
+                            UserId = "f9ae9a38-a55f-4c24-ba13-25354e7adb05",
+                            RoleId = "ca607067-c69b-429b-b375-8d9a0d304b0a"
                         });
                 });
 
@@ -355,6 +422,38 @@ namespace Dissertation.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Dissertation.Models.Chat", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Borrower")
+                        .WithMany()
+                        .HasForeignKey("BorrowerId");
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Loaner")
+                        .WithMany()
+                        .HasForeignKey("LoanerId");
+
+                    b.Navigation("Borrower");
+
+                    b.Navigation("Loaner");
+                });
+
+            modelBuilder.Entity("Dissertation.Models.ChatMessage", b =>
+                {
+                    b.HasOne("Dissertation.Models.Chat", "Chat")
+                        .WithMany()
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId");
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("Sender");
+                });
+
             modelBuilder.Entity("Dissertation.Models.Item", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Loaner")
@@ -362,6 +461,17 @@ namespace Dissertation.Migrations
                         .HasForeignKey("LoanerId");
 
                     b.Navigation("Loaner");
+                });
+
+            modelBuilder.Entity("Dissertation.Models.MessageNotification", b =>
+                {
+                    b.HasOne("Dissertation.Models.ChatMessage", "ChatMessage")
+                        .WithMany()
+                        .HasForeignKey("ChatMessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ChatMessage");
                 });
 
             modelBuilder.Entity("Dissertation.Models.Rent", b =>

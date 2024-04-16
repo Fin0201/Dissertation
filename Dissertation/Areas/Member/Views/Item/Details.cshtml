@@ -1,8 +1,23 @@
-﻿@model Dissertation.Models.Item
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> signInManager
+@inject UserManager<IdentityUser> userManager
+@model Dissertation.Models.Item
 
 @{
     ViewData["Title"] = "Item Details";
+    string userId = "";
+    bool isAdmin = false;
 }
+
+@if (signInManager.IsSignedIn(User))
+{
+    userId = userManager.GetUserId(User);
+    @if (await userManager.IsInRoleAsync(await userManager.GetUserAsync(User), "Admin"))
+    {
+        isAdmin = true;
+    }
+}
+
 
 <h1>Item Details</h1>
 
@@ -10,23 +25,66 @@
     <h4>Item</h4>
     <hr />
 
-    @*Displays all details of the selectd peice of Item*@
+    @*Displays all details of the selectd Item*@
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Description)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.MaxDays)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.MaxDays)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TotalStock)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TotalStock)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Category)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Category)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AddedOn)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AddedOn)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ModifiedOn)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ModifiedOn)
+        </dd>
+        <dt class="col-sm-2">
+            Image
+        </dt>
+        <dd class="col-sm-10">
+            <img src="/images/user-uploads/@Html.DisplayFor(model => model.ImageFilename)" alt="Item image" style="width: 100px; height: auto;" />
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    @if (userId != Model.LoanerId)
+    {
+        <a asp-area="Member" asp-controller="Chat" asp-route-id="@Model.LoanerId" asp-action="Message">Message</a> <text>|</text>
+    }
+    @if (userId == Model.LoanerId || isAdmin)
+    {
+        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> <text>|</text>
+    }
     <a asp-action="Index">Back to List</a>
 </div>
