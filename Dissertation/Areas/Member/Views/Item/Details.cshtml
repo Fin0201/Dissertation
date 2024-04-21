@@ -80,7 +80,7 @@
 <div>
     @if (userId != Model.LoanerId)
     {
-        <a asp-area="Member" asp-controller="Chat" asp-route-id="@Model.LoanerId" asp-action="Message">Message</a> <text>|</text>
+        <a asp-area="Member" asp-controller="Chat" asp-route-id="@Model.Id" asp-action="NewChat">Message</a> <text>|</text>
     }
     @if (userId == Model.LoanerId || isAdmin)
     {

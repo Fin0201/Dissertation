@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Dissertation.Migrations
 {
     /// <inheritdoc />
-    public partial class M1 : Migration
+    public partial class m1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -290,8 +290,8 @@ namespace Dissertation.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "70b3286d-ce7b-4297-b4d7-5c4208d15e1c", "c8153098-d46e-49cb-8a6b-1f756476879f", "Admin", "ADMIN" },
-                    { "ca607067-c69b-429b-b375-8d9a0d304b0a", "8718f206-b35f-4c21-90e5-fc2812a0e703", "Member", "MEMBER" }
+                    { "570afdee-a3ee-43b9-9d57-e90b8d97d372", "00986e28-7c0a-4229-97f3-fd994e92fd09", "Member", "MEMBER" },
+                    { "59a0e4a5-34e9-4aa7-ad0b-b38a1c7b7585", "deb3e278-672c-4f36-b189-bd341a95eaaf", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
@@ -299,8 +299,8 @@ namespace Dissertation.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "c8987864-0f7f-4b74-8b26-dd75f3fd9562", 0, "aeaac8db-813f-4449-ae0e-4acbc9eb8320", "admin@test.com", false, false, null, "ADMIN@TEST.COM", "ADMIN@TEST.COM", "AQAAAAIAAYagAAAAEK63AcCMM3t6cF4cOM/XOCqfsoPaNXaQMhk+IK/3jFbvL3H/lZrk5LJFOCCY66uUnQ==", null, false, "ccb91d62-8029-42cc-ba84-9b344a3493ed", false, "admin@test.com" },
-                    { "f9ae9a38-a55f-4c24-ba13-25354e7adb05", 0, "5ea6de51-9e86-4bb6-94b3-27330f086181", "member@test.com", false, false, null, "MEMBER@TEST.COM", "MEMBER@TEST.COM", "AQAAAAIAAYagAAAAEBhXOReOVb9cloLtmUQ5U+bgXH7adN9ZiJwG2ljAR+JvPTZgxBoY3og2JdlXZXuf7w==", null, false, "7c978572-3053-48d9-9b9d-26c13afe6313", false, "member@test.com" }
+                    { "aeb41a38-bd5e-4584-92d2-7585216f9262", 0, "2a679302-c439-4836-8724-961367998093", "member@test.com", false, false, null, "MEMBER@TEST.COM", "MEMBER@TEST.COM", "AQAAAAIAAYagAAAAELlHGVkL05EybIqg4EmoGUZRoP0ysbi3wextaNmqqI/QWCD4hRwYN2OZ+1Gbh/7c0g==", null, false, "4852712c-aa28-4765-92ee-1225c9819014", false, "member@test.com" },
+                    { "f1be38ca-9885-438e-b75b-8ff177231b12", 0, "3bfa788f-2424-4f54-8a98-8b42cff3ce6c", "admin@test.com", false, false, null, "ADMIN@TEST.COM", "ADMIN@TEST.COM", "AQAAAAIAAYagAAAAEJvgGTV2uorq1HcVUMUu9Q2XnMBaPh7YqrEH/HVmkO4CykaWQ4yJzaJlvrVvRyaL3w==", null, false, "0f635064-8d09-4200-9d93-a319f8bf385c", false, "admin@test.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -308,9 +308,9 @@ namespace Dissertation.Migrations
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { "70b3286d-ce7b-4297-b4d7-5c4208d15e1c", "c8987864-0f7f-4b74-8b26-dd75f3fd9562" },
-                    { "ca607067-c69b-429b-b375-8d9a0d304b0a", "c8987864-0f7f-4b74-8b26-dd75f3fd9562" },
-                    { "ca607067-c69b-429b-b375-8d9a0d304b0a", "f9ae9a38-a55f-4c24-ba13-25354e7adb05" }
+                    { "570afdee-a3ee-43b9-9d57-e90b8d97d372", "aeb41a38-bd5e-4584-92d2-7585216f9262" },
+                    { "570afdee-a3ee-43b9-9d57-e90b8d97d372", "f1be38ca-9885-438e-b75b-8ff177231b12" },
+                    { "59a0e4a5-34e9-4aa7-ad0b-b38a1c7b7585", "f1be38ca-9885-438e-b75b-8ff177231b12" }
                 });
 
             migrationBuilder.CreateIndex(

@@ -66,6 +66,10 @@ Decide whether or not to keep TotalStock
 
 Test all
 
+Search for TODO in all pages
+
+Remove all breakpoints lol
+
 
 Selenium
 
