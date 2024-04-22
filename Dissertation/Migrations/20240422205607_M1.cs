@@ -301,8 +301,8 @@ namespace Dissertation.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "6a759c80-c106-489d-b81b-a0e6f744f283", "cc28bab5-cf71-4f08-ad3e-296641d2f2d1", "Admin", "ADMIN" },
-                    { "b7607822-e890-4641-a1b3-7f8e17c592ab", "2ad1d389-8d0d-4508-9786-8a688da1d42e", "Member", "MEMBER" }
+                    { "32e98450-6e8a-475c-82ee-8cc400fd1ef5", "28834016-42f9-4048-9c86-a67d0c22e479", "Member", "MEMBER" },
+                    { "95e3fdcb-5135-4c74-bead-12002180a2be", "eb111bf5-2526-4e6a-9279-591a1c427537", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
@@ -310,8 +310,8 @@ namespace Dissertation.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "43632085-14c1-4824-bbef-2369bdbb7891", 0, "46758de7-8cc8-4189-ad35-cd2d2c44e3f8", "member@test.com", false, false, null, "MEMBER@TEST.COM", "MEMBER@TEST.COM", "AQAAAAIAAYagAAAAED3mo38UAV+Th2DnmpNFV9m3DR2ITM7xlTkRIYs87IBWDn0MKIkQBtH7xBlyZnMgcQ==", null, false, "cc96f38e-d270-408b-8044-9745c3082eed", false, "member@test.com" },
-                    { "78747442-55eb-467e-babf-a1420320c3d4", 0, "abd77599-875b-4d5e-8516-f46aea385b02", "admin@test.com", false, false, null, "ADMIN@TEST.COM", "ADMIN@TEST.COM", "AQAAAAIAAYagAAAAEPEOVfeestjX84VtSWeUkcfRKpjkKlwsux8PxnZssxFaDxJXCI7V0VMcSIDCvbjB2Q==", null, false, "6c9a3902-a403-40b8-9e7a-8c69464f4c46", false, "admin@test.com" }
+                    { "cdfaaae0-712c-4956-a42e-98c5b162f8fc", 0, "f9e20119-d22a-462e-a4b7-df9379572461", "admin@test.com", false, false, null, "ADMIN@TEST.COM", "ADMIN@TEST.COM", "AQAAAAIAAYagAAAAELhsDfW/0Py/KNye6rXKThcu4PI696hpBHxjwHt3OQDK3TpKy3oy3xRWq9vYbWd5SA==", null, false, "89b97433-124d-41e7-a8e9-da32790b6743", false, "AdminAccount" },
+                    { "f52b2055-4914-453c-b755-a8d22cce9169", 0, "7696af2a-4770-4c81-80d2-3ac5b2de4500", "member@test.com", false, false, null, "MEMBER@TEST.COM", "MEMBER@TEST.COM", "AQAAAAIAAYagAAAAEJktbZ85rDzkxOonHNxF+qeTHZGqEpC9cGiYo33KYItRRC237GIVCR/gY6qDDP4F+Q==", null, false, "07ef68d4-c49a-4d60-b6e7-7fa667de796a", false, "MemberAccount" }
                 });
 
             migrationBuilder.InsertData(
@@ -319,9 +319,9 @@ namespace Dissertation.Migrations
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { "b7607822-e890-4641-a1b3-7f8e17c592ab", "43632085-14c1-4824-bbef-2369bdbb7891" },
-                    { "6a759c80-c106-489d-b81b-a0e6f744f283", "78747442-55eb-467e-babf-a1420320c3d4" },
-                    { "b7607822-e890-4641-a1b3-7f8e17c592ab", "78747442-55eb-467e-babf-a1420320c3d4" }
+                    { "32e98450-6e8a-475c-82ee-8cc400fd1ef5", "cdfaaae0-712c-4956-a42e-98c5b162f8fc" },
+                    { "95e3fdcb-5135-4c74-bead-12002180a2be", "cdfaaae0-712c-4956-a42e-98c5b162f8fc" },
+                    { "32e98450-6e8a-475c-82ee-8cc400fd1ef5", "f52b2055-4914-453c-b755-a8d22cce9169" }
                 });
 
             migrationBuilder.CreateIndex(

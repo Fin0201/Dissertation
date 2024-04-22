@@ -1,15 +1,11 @@
 ﻿@using Dissertation.Areas.Member.Models
-@model ChatMessageViewModel
+@model ChatUserViewModel
 
 @{
     ViewData["Title"] = "Item Details";
 }
 
 <div class="container">
-    <div class="row p-1">
-        <div class="col-1">User</div>
-        <div class="col-5"><input type="text" id="userInput" /></div>
-    </div>
     <div class="row p-1">
         <div class="col-1">Message</div>
         <div class="col-5"><input type="text" class="w-100" id="messageInput" /></div>
@@ -26,19 +22,15 @@
     </div>
     <div class="row p-1">
         <div class="col-6">
-            <ul id="messagesList">
-                @foreach (var message in Model.Messages)
-                {
-                    <li>@Model.User.UserName says @message.messageContent</li>
-                }
-            </ul>
+            <input type="submit" id="loadPrevious" onclick="loadMessages()" value="Load more messages" />
+            <ul id="messagesList"></ul>
         </div>
     </div>
 </div>
 <script>
     var url = '@Url.Action("SendMessage", "Chat")';
     var chatId = @Model.Chat.Id;
-    var userName = '@Model.User.UserName'
+    var user = '@Model.User.UserName';
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="~/js/signalr/dist/browser/signalr.js"></script>

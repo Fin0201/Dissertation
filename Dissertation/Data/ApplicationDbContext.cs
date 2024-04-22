@@ -60,7 +60,7 @@ namespace Dissertation.Data
             PasswordHasher<IdentityUser> hasher = new PasswordHasher<IdentityUser>();
             IdentityUser user = new IdentityUser();
             user.Id = AdminId;
-            user.UserName = "admin@test.com";
+            user.UserName = "AdminAccount";
             user.NormalizedUserName = "admin@test.com".ToUpper();
             user.NormalizedEmail = "admin@test.com".ToUpper();
             user.Email = "admin@test.com";
@@ -75,7 +75,7 @@ namespace Dissertation.Data
             PasswordHasher<IdentityUser> hasher = new PasswordHasher<IdentityUser>();
             IdentityUser user = new IdentityUser();
             user.Id = MemberId;
-            user.UserName = "member@test.com";
+            user.UserName = "MemberAccount";
             user.NormalizedUserName = "member@test.com".ToUpper();
             user.NormalizedEmail = "member@test.com".ToUpper();
             user.Email = "member@test.com";

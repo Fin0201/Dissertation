@@ -1,4 +1,5 @@
-﻿using Dissertation.Areas.Member.Models;
+﻿using Azure.Messaging;
+using Dissertation.Areas.Member.Models;
 using Dissertation.Data;
 using Dissertation.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -104,7 +105,7 @@ namespace Dissertation.Areas.Member.Controllers
 
         public async Task<IActionResult> Message(int? id)
         {
-            if (id == null || _context.Items == null)
+            if (id == null || _context.Chats == null)
             {
                 return NotFound();
             }
@@ -127,33 +128,18 @@ namespace Dissertation.Areas.Member.Controllers
                 return NotFound();
             }
 
-            int messagesToLoad = 15;
-            var messages = await _context.Messages
-                             .Where(m => m.ChatId == id)
-                             .OrderBy(m => m.Timestamp)
-                             .Take(messagesToLoad)
-                             .ToListAsync();
-
-            bool endOfMessages = false;
-            if (messages.Count() < messagesToLoad)
-            {
-                endOfMessages = true;
-            }
-
-            var chatMessages = new ChatMessageViewModel()
+            var chatUser = new ChatUserViewModel()
             {
                 Chat = chat,
-                Messages = messages,
-                User = user,
-                EndOfMessages = endOfMessages
+                User = user
             };
 
-            return View(chatMessages);
+            return View(chatUser);
         }
 
         public async Task<IActionResult> SendMessage(int? id, string? messageContent)
         {
-            if (id == null || messageContent == null || _context.Items == null)
+            if (id == null || messageContent == null || _context.Chats == null)
             {
                 return NotFound();
             }
@@ -187,9 +173,28 @@ namespace Dissertation.Areas.Member.Controllers
             return NoContent();
         }
 
-        public async Task<IActionResult> LoadMessages()
+        public async Task<IActionResult> LoadMessages(int? id, int messagesLoaded)
         {
-            return Json(new { messages });
+            if (id == null ||  _context.Chats == null)
+            {
+                return NotFound();
+            }
+
+            int messagesToLoad = 15;
+            var messages = await _context.Messages
+                             .Where(m => m.ChatId == id)
+                             .OrderByDescending(m => m.Timestamp)
+                             .Skip(messagesLoaded)
+                             .Take(messagesToLoad)
+                             .ToListAsync();
+
+            bool endOfMessages = false;
+            if (messages.Count() < messagesToLoad)
+            {
+                endOfMessages = true;
+            }
+
+            return Json(new { messages = messages, endOfMessages = endOfMessages });
         }
     }
 }

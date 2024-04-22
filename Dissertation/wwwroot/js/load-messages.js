@@ -1,40 +1,38 @@
-﻿"use strict";
+﻿var loadButton = document.getElementById("loadPrevious");
+var messagesLoaded = 0;
 
-var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+loadMessages();
+window.scrollTo(0, document.body.scrollHeight);
 
-//Disable the send button until connection is established.
-document.getElementById("sendButton").disabled = true;
-
-connection.on("ReceiveMessage", function (user, message) {
-    var li = document.createElement("li");
-    document.getElementById("messagesList").appendChild(li);
-    // We can assign user-supplied strings to an element's textContent because it
-    // is not interpreted as markup. If you're assigning in any other way, you 
-    // should be aware of possible script injection concerns.
-    li.textContent = `${user} says ${message}`;
-});
-
-connection.start().then(function () {
-    document.getElementById("sendButton").disabled = false;
-}).catch(function (err) {
-    return console.error(err.toString());
-});
-
-document.getElementById("sendButton").addEventListener("click", function (event) {
-    var user = document.getElementById("userInput").value;
-    var message = document.getElementById("messageInput").value;
+function loadMessages() {
+    if (loadButton) {
+        loadButton.disabled = true;
+    }
     $.ajax({
-        type: "POST",
-        url: url,
-        data: { id: chatId, messageContent: message },
-        success: function () {
-            connection.invoke("SendMessage", user, message).catch(function (err) {
-                return console.error(err.toString());
-            });
+        type: "GET",
+        url: "/Member/Chat/LoadMessages",
+        data: { id: chatId, messagesLoaded: messagesLoaded },
+        success: function (messageData) {
+            displayMessages(messageData.messages)
+            if (messageData.endOfMessages && loadButton) {
+                document.getElementById("loadPrevious").remove();
+            } else if (loadButton) {
+                document.getElementById("loadPrevious").disabled = false;
+            }
+            messagesLoaded += messageData.messages.length;
         },
         error: function () {
-            alert("Error sending message.");
+            alert("Error loading message.");
         }
     });
-    event.preventDefault();
-});
+}
+
+function displayMessages(messages) {
+    messages.forEach(function (message) {
+        var li = document.createElement("li");
+        var messageList = document.getElementById("messagesList");
+        li.textContent = `${user} says ${message.messageContent}`;
+
+        messageList.insertBefore(li, messagesList.firstChild);
+    });
+}

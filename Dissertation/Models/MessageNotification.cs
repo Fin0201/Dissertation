@@ -23,5 +23,7 @@ namespace Dissertation.Models
 
         [Required]
         public bool HasOpened { get; set; }
+
+        // Do Recipient hasOpened in messages instead of allo this
     }
 }
