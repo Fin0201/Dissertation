@@ -1,4 +1,5 @@
-﻿using Dissertation.Data;
+﻿using Dissertation.Areas.Member.Models;
+using Dissertation.Data;
 using Dissertation.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -113,6 +114,7 @@ namespace Dissertation.Areas.Member.Controllers
             {
                 return NotFound();
             }
+            var user = await _userManager.FindByIdAsync(currentUserId);
 
             var chat = await _context.Chats.FirstOrDefaultAsync(m => m.Id == id);
             if (chat == null)
@@ -125,7 +127,28 @@ namespace Dissertation.Areas.Member.Controllers
                 return NotFound();
             }
 
-            return View(chat);
+            int messagesToLoad = 15;
+            var messages = await _context.Messages
+                             .Where(m => m.ChatId == id)
+                             .OrderBy(m => m.Timestamp)
+                             .Take(messagesToLoad)
+                             .ToListAsync();
+
+            bool endOfMessages = false;
+            if (messages.Count() < messagesToLoad)
+            {
+                endOfMessages = true;
+            }
+
+            var chatMessages = new ChatMessageViewModel()
+            {
+                Chat = chat,
+                Messages = messages,
+                User = user,
+                EndOfMessages = endOfMessages
+            };
+
+            return View(chatMessages);
         }
 
         public async Task<IActionResult> SendMessage(int? id, string? messageContent)
@@ -162,6 +185,11 @@ namespace Dissertation.Areas.Member.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        public async Task<IActionResult> LoadMessages()
+        {
+            return Json(new { messages });
         }
     }
 }

@@ -8,13 +8,9 @@
 
   <ItemGroup>
     <Compile Remove="Areas\Member\Data\**" />
-    <Compile Remove="Areas\Member\Models\**" />
     <Content Remove="Areas\Member\Data\**" />
-    <Content Remove="Areas\Member\Models\**" />
     <EmbeddedResource Remove="Areas\Member\Data\**" />
-    <EmbeddedResource Remove="Areas\Member\Models\**" />
     <None Remove="Areas\Member\Data\**" />
-    <None Remove="Areas\Member\Models\**" />
   </ItemGroup>
 
   <ItemGroup>
