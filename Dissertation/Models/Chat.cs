@@ -9,16 +9,19 @@ namespace Dissertation.Models
         [Key]
         public int Id { get; set; }
 
-        public string? LoanerId { get; set; }
+        [Required]
+        public string LoanerId { get; set; }
 
         [ForeignKey("LoanerId")]
-        public IdentityUser? Loaner { get; set; }
+        public IdentityUser Loaner { get; set; }
 
-        public string? BorrowerId { get; set; }
+        [Required]
+        public string BorrowerId { get; set; }
 
         [ForeignKey("BorrowerId")]
-        public IdentityUser? Borrower { get; set; }
+        public IdentityUser Borrower { get; set; }
 
+        [Required]
         public DateTime StartedOn { get; set; }
     }
 }

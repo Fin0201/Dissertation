@@ -23,8 +23,18 @@ connection.start().then(function () {
 document.getElementById("sendButton").addEventListener("click", function (event) {
     var user = document.getElementById("userInput").value;
     var message = document.getElementById("messageInput").value;
-    connection.invoke("SendMessage", user, message).catch(function (err) {
-        return console.error(err.toString());
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: { id: chatId, messageContent: message },
+        success: function () {
+            connection.invoke("SendMessage", user, message).catch(function (err) {
+                return console.error(err.toString());
+            });
+        },
+        error: function () {
+            alert("Error sending message.");
+        }
     });
     event.preventDefault();
 });

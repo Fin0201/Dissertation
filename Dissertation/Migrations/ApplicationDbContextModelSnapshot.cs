@@ -24,9 +24,11 @@ namespace Dissertation.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("BorrowerId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LoanerId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("StartedOn")
@@ -39,30 +41,6 @@ namespace Dissertation.Migrations
                     b.HasIndex("LoanerId");
 
                     b.ToTable("Chats");
-                });
-
-            modelBuilder.Entity("Dissertation.Models.ChatMessage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ChatId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("SenderId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChatId");
-
-                    b.HasIndex("SenderId");
-
-                    b.ToTable("ChatMessages");
                 });
 
             modelBuilder.Entity("Dissertation.Models.Item", b =>
@@ -113,6 +91,35 @@ namespace Dissertation.Migrations
                     b.ToTable("Items");
                 });
 
+            modelBuilder.Entity("Dissertation.Models.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ChatId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("SenderId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("messageContent")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("Messages");
+                });
+
             modelBuilder.Entity("Dissertation.Models.MessageNotification", b =>
                 {
                     b.Property<int>("Id")
@@ -125,9 +132,15 @@ namespace Dissertation.Migrations
                     b.Property<bool>("HasOpened")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("RecipientId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ChatMessageId");
+
+                    b.HasIndex("RecipientId");
 
                     b.ToTable("MessageNotifications");
                 });
@@ -188,15 +201,15 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "59a0e4a5-34e9-4aa7-ad0b-b38a1c7b7585",
-                            ConcurrencyStamp = "deb3e278-672c-4f36-b189-bd341a95eaaf",
+                            Id = "6a759c80-c106-489d-b81b-a0e6f744f283",
+                            ConcurrencyStamp = "cc28bab5-cf71-4f08-ad3e-296641d2f2d1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "570afdee-a3ee-43b9-9d57-e90b8d97d372",
-                            ConcurrencyStamp = "00986e28-7c0a-4229-97f3-fd994e92fd09",
+                            Id = "b7607822-e890-4641-a1b3-7f8e17c592ab",
+                            ConcurrencyStamp = "2ad1d389-8d0d-4508-9786-8a688da1d42e",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         });
@@ -291,33 +304,33 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f1be38ca-9885-438e-b75b-8ff177231b12",
+                            Id = "78747442-55eb-467e-babf-a1420320c3d4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3bfa788f-2424-4f54-8a98-8b42cff3ce6c",
+                            ConcurrencyStamp = "abd77599-875b-4d5e-8516-f46aea385b02",
                             Email = "admin@test.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@TEST.COM",
                             NormalizedUserName = "ADMIN@TEST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJvgGTV2uorq1HcVUMUu9Q2XnMBaPh7YqrEH/HVmkO4CykaWQ4yJzaJlvrVvRyaL3w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPEOVfeestjX84VtSWeUkcfRKpjkKlwsux8PxnZssxFaDxJXCI7V0VMcSIDCvbjB2Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "0f635064-8d09-4200-9d93-a319f8bf385c",
+                            SecurityStamp = "6c9a3902-a403-40b8-9e7a-8c69464f4c46",
                             TwoFactorEnabled = false,
                             UserName = "admin@test.com"
                         },
                         new
                         {
-                            Id = "aeb41a38-bd5e-4584-92d2-7585216f9262",
+                            Id = "43632085-14c1-4824-bbef-2369bdbb7891",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2a679302-c439-4836-8724-961367998093",
+                            ConcurrencyStamp = "46758de7-8cc8-4189-ad35-cd2d2c44e3f8",
                             Email = "member@test.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "MEMBER@TEST.COM",
                             NormalizedUserName = "MEMBER@TEST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAELlHGVkL05EybIqg4EmoGUZRoP0ysbi3wextaNmqqI/QWCD4hRwYN2OZ+1Gbh/7c0g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAED3mo38UAV+Th2DnmpNFV9m3DR2ITM7xlTkRIYs87IBWDn0MKIkQBtH7xBlyZnMgcQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "4852712c-aa28-4765-92ee-1225c9819014",
+                            SecurityStamp = "cc96f38e-d270-408b-8044-9745c3082eed",
                             TwoFactorEnabled = false,
                             UserName = "member@test.com"
                         });
@@ -385,18 +398,18 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "f1be38ca-9885-438e-b75b-8ff177231b12",
-                            RoleId = "59a0e4a5-34e9-4aa7-ad0b-b38a1c7b7585"
+                            UserId = "78747442-55eb-467e-babf-a1420320c3d4",
+                            RoleId = "6a759c80-c106-489d-b81b-a0e6f744f283"
                         },
                         new
                         {
-                            UserId = "f1be38ca-9885-438e-b75b-8ff177231b12",
-                            RoleId = "570afdee-a3ee-43b9-9d57-e90b8d97d372"
+                            UserId = "78747442-55eb-467e-babf-a1420320c3d4",
+                            RoleId = "b7607822-e890-4641-a1b3-7f8e17c592ab"
                         },
                         new
                         {
-                            UserId = "aeb41a38-bd5e-4584-92d2-7585216f9262",
-                            RoleId = "570afdee-a3ee-43b9-9d57-e90b8d97d372"
+                            UserId = "43632085-14c1-4824-bbef-2369bdbb7891",
+                            RoleId = "b7607822-e890-4641-a1b3-7f8e17c592ab"
                         });
                 });
 
@@ -423,32 +436,19 @@ namespace Dissertation.Migrations
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Borrower")
                         .WithMany()
-                        .HasForeignKey("BorrowerId");
+                        .HasForeignKey("BorrowerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Loaner")
                         .WithMany()
-                        .HasForeignKey("LoanerId");
+                        .HasForeignKey("LoanerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Borrower");
 
                     b.Navigation("Loaner");
-                });
-
-            modelBuilder.Entity("Dissertation.Models.ChatMessage", b =>
-                {
-                    b.HasOne("Dissertation.Models.Chat", "Chat")
-                        .WithMany()
-                        .HasForeignKey("ChatId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Sender")
-                        .WithMany()
-                        .HasForeignKey("SenderId");
-
-                    b.Navigation("Chat");
-
-                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("Dissertation.Models.Item", b =>
@@ -460,15 +460,42 @@ namespace Dissertation.Migrations
                     b.Navigation("Loaner");
                 });
 
+            modelBuilder.Entity("Dissertation.Models.Message", b =>
+                {
+                    b.HasOne("Dissertation.Models.Chat", "Chat")
+                        .WithMany()
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("Sender");
+                });
+
             modelBuilder.Entity("Dissertation.Models.MessageNotification", b =>
                 {
-                    b.HasOne("Dissertation.Models.ChatMessage", "ChatMessage")
+                    b.HasOne("Dissertation.Models.Message", "ChatMessage")
                         .WithMany()
                         .HasForeignKey("ChatMessageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Recipient")
+                        .WithMany()
+                        .HasForeignKey("RecipientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("ChatMessage");
+
+                    b.Navigation("Recipient");
                 });
 
             modelBuilder.Entity("Dissertation.Models.Rent", b =>

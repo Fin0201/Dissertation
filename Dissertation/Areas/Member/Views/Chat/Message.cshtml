@@ -15,9 +15,7 @@
     </div>
     <div class="row p-1">
         <div class="col-6 text-end">
-            <form asp-action="SendMessage" method="post">
-                <input type="submit" asp-action="SendMessage" asp-route-id="@Model.Id" id="sendButton" value="Send Message" />
-            </form>
+            <input type="submit" id="sendButton" value="Send Message" />
         </div>
     </div>
     <div class="row p-1">
@@ -31,5 +29,10 @@
         </div>
     </div>
 </div>
+<script>
+    var url = '@Url.Action("SendMessage", "Chat")';
+    var chatId = @Model.Id;
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
 <script src="~/js/chat.js"></script>

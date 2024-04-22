@@ -44,14 +44,14 @@ namespace Dissertation.Areas.Member.Controllers
                 .FirstOrDefaultAsync(m => m.LoanerId == item.LoanerId && m.BorrowerId == currentUserId);
             if (existingChat != null)
             {
-                return RedirectToAction("Chat", new { chat = existingChat }); // TODO test this
+                return RedirectToAction("Message", new { id = existingChat.Id }); // TODO test this
             }
 
             // Returns with the item owner's ID
             return View(item);
         }
 
-        public async Task<IActionResult> InitiateChat(int? id)
+        public async Task<IActionResult> InitiateChat(int? id, string? messageContent)
         {
             if (id == null || _context.Items == null)
             {
@@ -75,11 +75,10 @@ namespace Dissertation.Areas.Member.Controllers
                 .FirstOrDefaultAsync(m => m.LoanerId == item.LoanerId && m.BorrowerId == currentUserId);
             if (existingChat != null)
             {
-                return RedirectToAction("Chat", new { chat = existingChat }); // TODO test this
+                return RedirectToAction("LoadChat", new { id = existingChat.Id }); // TODO test this
             }
 
             Chat chat = new Chat();
-
             chat.LoanerId = item.LoanerId;
             chat.BorrowerId = currentUserId;
             chat.StartedOn = DateTime.Now;
@@ -87,14 +86,23 @@ namespace Dissertation.Areas.Member.Controllers
             _context.Add(chat);
             await _context.SaveChangesAsync();
 
-            /*return RedirectToAction("Message", new {  });*/
-            return View(item);
+            if (!string.IsNullOrEmpty(messageContent))
+            {
+                Message message = new Message();
+                message.ChatId = chat.Id;
+                message.messageContent = messageContent;
+                message.SenderId = currentUserId;
+                message.Timestamp = DateTime.Now;
+
+                _context.Add(message);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Message", new { id = chat.Id });
         }
 
-        public async Task<IActionResult> Message(string id)
+        public async Task<IActionResult> Message(int? id)
         {
-            System.Diagnostics.Debug.WriteLine("HERE");
-            System.Diagnostics.Debug.WriteLine("Existing chat");
             if (id == null || _context.Items == null)
             {
                 return NotFound();
@@ -106,9 +114,13 @@ namespace Dissertation.Areas.Member.Controllers
                 return NotFound();
             }
 
-            var chat = await _context.Chats
-                .FirstOrDefaultAsync(m => m.LoanerId == id && m.BorrowerId == currentUserId);
+            var chat = await _context.Chats.FirstOrDefaultAsync(m => m.Id == id);
             if (chat == null)
+            {
+                return NotFound();
+            }
+
+            if (currentUserId != chat.LoanerId && currentUserId != chat.BorrowerId)
             {
                 return NotFound();
             }
@@ -116,9 +128,40 @@ namespace Dissertation.Areas.Member.Controllers
             return View(chat);
         }
 
-        /*public Task<IActionResult> SendMessage(int? chatId)
+        public async Task<IActionResult> SendMessage(int? id, string? messageContent)
         {
-            return View(chatId);
-        }*/
+            if (id == null || messageContent == null || _context.Items == null)
+            {
+                return NotFound();
+            }
+
+            var currentUserId = _userManager.GetUserId(User);
+            if (currentUserId == null)
+            {
+                return NotFound();
+            }
+
+            var chat = await _context.Chats.FirstOrDefaultAsync(m => m.Id == id);
+            if (chat == null)
+            {
+                return NotFound();
+            }
+
+            if (currentUserId != chat.LoanerId && currentUserId != chat.BorrowerId)
+            {
+                return NotFound();
+            }
+
+            Message message = new Message();
+            message.ChatId = chat.Id;
+            message.messageContent = messageContent;
+            message.SenderId = currentUserId;
+            message.Timestamp = DateTime.Now;
+
+            _context.Add(message);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }

@@ -1,35 +1,30 @@
 ﻿@model Dissertation.Models.Item
 
 @{
-    ViewData["Title"] = "You haven't chatted with this user yet! why not send them a message?";
+    ViewData["Title"] = "Message User";
 }
 
-<div class="container">
-    <div class="row p-1">
-        <div class="col-1">User</div>
-        <div class="col-5"><input type="text" id="userInput" /></div>
-    </div>
-    <div class="row p-1">
-        <div class="col-1">Message</div>
-        <div class="col-5"><input type="text" class="w-100" id="messageInput" /></div>
-    </div>
-    <div class="row p-1">
-        <div class="col-6 text-end">
-            <form asp-action="SendMessage" method="post">
-                <input type="submit" asp-action="SendMessage" asp-route-id="@Model.Id" id="sendButton" value="Send Message" />
-            </form>
+<form asp-action="InitiateChat" method="post">
+    <div class="container">
+        <div class="row p-1">
+            <div class="col-1">Message</div>
+            <div class="col-5"><input type="text" class="w-100" id="messageInput" name="messageContent" /></div>
+        </div>
+        <div class="row p-1">
+            <div class="col-6 text-end">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <input type="submit" id="sendButton" value="Send Message" />
+            </div>
+        </div>
+        <div class="row p-1">
+            <div class="col-6">
+                <hr />
+            </div>
+        </div>
+        <div class="row p-1">
+            <div class="col-6">
+                <ul id="messagesList"></ul>
+            </div>
         </div>
     </div>
-    <div class="row p-1">
-        <div class="col-6">
-            <hr />
-        </div>
-    </div>
-    <div class="row p-1">
-        <div class="col-6">
-            <ul id="messagesList"></ul>
-        </div>
-    </div>
-</div>
-<script src="~/js/signalr/dist/browser/signalr.js"></script>
-<script src="~/js/chat.js"></script>
+</form>

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Dissertation.Migrations
 {
     /// <inheritdoc />
-    public partial class m1 : Migration
+    public partial class M1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -164,8 +164,8 @@ namespace Dissertation.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    LoanerId = table.Column<string>(type: "TEXT", nullable: true),
-                    BorrowerId = table.Column<string>(type: "TEXT", nullable: true),
+                    LoanerId = table.Column<string>(type: "TEXT", nullable: false),
+                    BorrowerId = table.Column<string>(type: "TEXT", nullable: false),
                     StartedOn = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -175,12 +175,14 @@ namespace Dissertation.Migrations
                         name: "FK_Chats_AspNetUsers_BorrowerId",
                         column: x => x.BorrowerId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Chats_AspNetUsers_LoanerId",
                         column: x => x.LoanerId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -212,25 +214,27 @@ namespace Dissertation.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ChatMessages",
+                name: "Messages",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    messageContent = table.Column<string>(type: "TEXT", nullable: false),
                     ChatId = table.Column<int>(type: "INTEGER", nullable: false),
-                    SenderId = table.Column<string>(type: "TEXT", nullable: true),
+                    SenderId = table.Column<string>(type: "TEXT", nullable: false),
                     Timestamp = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ChatMessages", x => x.Id);
+                    table.PrimaryKey("PK_Messages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ChatMessages_AspNetUsers_SenderId",
+                        name: "FK_Messages_AspNetUsers_SenderId",
                         column: x => x.SenderId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ChatMessages_Chats_ChatId",
+                        name: "FK_Messages_Chats_ChatId",
                         column: x => x.ChatId,
                         principalTable: "Chats",
                         principalColumn: "Id",
@@ -272,15 +276,22 @@ namespace Dissertation.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     ChatMessageId = table.Column<int>(type: "INTEGER", nullable: false),
+                    RecipientId = table.Column<string>(type: "TEXT", nullable: false),
                     HasOpened = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MessageNotifications", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MessageNotifications_ChatMessages_ChatMessageId",
+                        name: "FK_MessageNotifications_AspNetUsers_RecipientId",
+                        column: x => x.RecipientId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MessageNotifications_Messages_ChatMessageId",
                         column: x => x.ChatMessageId,
-                        principalTable: "ChatMessages",
+                        principalTable: "Messages",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -290,8 +301,8 @@ namespace Dissertation.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "570afdee-a3ee-43b9-9d57-e90b8d97d372", "00986e28-7c0a-4229-97f3-fd994e92fd09", "Member", "MEMBER" },
-                    { "59a0e4a5-34e9-4aa7-ad0b-b38a1c7b7585", "deb3e278-672c-4f36-b189-bd341a95eaaf", "Admin", "ADMIN" }
+                    { "6a759c80-c106-489d-b81b-a0e6f744f283", "cc28bab5-cf71-4f08-ad3e-296641d2f2d1", "Admin", "ADMIN" },
+                    { "b7607822-e890-4641-a1b3-7f8e17c592ab", "2ad1d389-8d0d-4508-9786-8a688da1d42e", "Member", "MEMBER" }
                 });
 
             migrationBuilder.InsertData(
@@ -299,8 +310,8 @@ namespace Dissertation.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "aeb41a38-bd5e-4584-92d2-7585216f9262", 0, "2a679302-c439-4836-8724-961367998093", "member@test.com", false, false, null, "MEMBER@TEST.COM", "MEMBER@TEST.COM", "AQAAAAIAAYagAAAAELlHGVkL05EybIqg4EmoGUZRoP0ysbi3wextaNmqqI/QWCD4hRwYN2OZ+1Gbh/7c0g==", null, false, "4852712c-aa28-4765-92ee-1225c9819014", false, "member@test.com" },
-                    { "f1be38ca-9885-438e-b75b-8ff177231b12", 0, "3bfa788f-2424-4f54-8a98-8b42cff3ce6c", "admin@test.com", false, false, null, "ADMIN@TEST.COM", "ADMIN@TEST.COM", "AQAAAAIAAYagAAAAEJvgGTV2uorq1HcVUMUu9Q2XnMBaPh7YqrEH/HVmkO4CykaWQ4yJzaJlvrVvRyaL3w==", null, false, "0f635064-8d09-4200-9d93-a319f8bf385c", false, "admin@test.com" }
+                    { "43632085-14c1-4824-bbef-2369bdbb7891", 0, "46758de7-8cc8-4189-ad35-cd2d2c44e3f8", "member@test.com", false, false, null, "MEMBER@TEST.COM", "MEMBER@TEST.COM", "AQAAAAIAAYagAAAAED3mo38UAV+Th2DnmpNFV9m3DR2ITM7xlTkRIYs87IBWDn0MKIkQBtH7xBlyZnMgcQ==", null, false, "cc96f38e-d270-408b-8044-9745c3082eed", false, "member@test.com" },
+                    { "78747442-55eb-467e-babf-a1420320c3d4", 0, "abd77599-875b-4d5e-8516-f46aea385b02", "admin@test.com", false, false, null, "ADMIN@TEST.COM", "ADMIN@TEST.COM", "AQAAAAIAAYagAAAAEPEOVfeestjX84VtSWeUkcfRKpjkKlwsux8PxnZssxFaDxJXCI7V0VMcSIDCvbjB2Q==", null, false, "6c9a3902-a403-40b8-9e7a-8c69464f4c46", false, "admin@test.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -308,9 +319,9 @@ namespace Dissertation.Migrations
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { "570afdee-a3ee-43b9-9d57-e90b8d97d372", "aeb41a38-bd5e-4584-92d2-7585216f9262" },
-                    { "570afdee-a3ee-43b9-9d57-e90b8d97d372", "f1be38ca-9885-438e-b75b-8ff177231b12" },
-                    { "59a0e4a5-34e9-4aa7-ad0b-b38a1c7b7585", "f1be38ca-9885-438e-b75b-8ff177231b12" }
+                    { "b7607822-e890-4641-a1b3-7f8e17c592ab", "43632085-14c1-4824-bbef-2369bdbb7891" },
+                    { "6a759c80-c106-489d-b81b-a0e6f744f283", "78747442-55eb-467e-babf-a1420320c3d4" },
+                    { "b7607822-e890-4641-a1b3-7f8e17c592ab", "78747442-55eb-467e-babf-a1420320c3d4" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -351,16 +362,6 @@ namespace Dissertation.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_ChatMessages_ChatId",
-                table: "ChatMessages",
-                column: "ChatId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ChatMessages_SenderId",
-                table: "ChatMessages",
-                column: "SenderId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Chats_BorrowerId",
                 table: "Chats",
                 column: "BorrowerId");
@@ -379,6 +380,21 @@ namespace Dissertation.Migrations
                 name: "IX_MessageNotifications_ChatMessageId",
                 table: "MessageNotifications",
                 column: "ChatMessageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MessageNotifications_RecipientId",
+                table: "MessageNotifications",
+                column: "RecipientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Messages_ChatId",
+                table: "Messages",
+                column: "ChatId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Messages_SenderId",
+                table: "Messages",
+                column: "SenderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Rents_ItemId",
@@ -419,7 +435,7 @@ namespace Dissertation.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "ChatMessages");
+                name: "Messages");
 
             migrationBuilder.DropTable(
                 name: "Items");
