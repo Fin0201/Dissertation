@@ -3,9 +3,13 @@ using Dissertation.Areas.Member.Models;
 using Dissertation.Data;
 using Dissertation.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Buffers.Text;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Dissertation.Areas.Member.Controllers
 {
@@ -20,6 +24,53 @@ namespace Dissertation.Areas.Member.Controllers
         {
             _context = context;
             _userManager = userManager;
+        }
+
+        public static (string, byte[]) EncryptString(string plainText, string key)
+        {
+            using (var aes = Aes.Create())
+            {
+                
+
+                aes.Key = Encoding.UTF8.GetBytes(key);
+                aes.GenerateIV();
+                var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+                using (var ms = new MemoryStream())
+                {
+                    using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (var sw = new StreamWriter(cs))
+                        {
+                            sw.Write(plainText);
+                        }
+                    }
+
+                    string cipherText = Convert.ToBase64String(ms.ToArray());
+                    return (cipherText, aes.IV);
+                }
+            }
+        }
+
+        public static string DecryptString(string cipherText, string key, byte[] IV)
+        {
+            using (var aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(key);
+                aes.IV = IV;
+                var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+
+                using (var ms = new MemoryStream(Convert.FromBase64String(cipherText)))
+                {
+                    using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (var sr = new StreamReader(cs))
+                        {
+                            return sr.ReadToEnd();
+                        }
+                    }
+                }
+            }
         }
 
         public async Task<IActionResult> NewChat(int? id)
@@ -43,7 +94,7 @@ namespace Dissertation.Areas.Member.Controllers
             }
 
             var existingChat = await _context.Chats
-                .FirstOrDefaultAsync(m => m.LoanerId == item.LoanerId && m.BorrowerId == currentUserId);
+                .FirstOrDefaultAsync(m => m.LoanerId == item.LoanerId && m.BorrowerId == currentUserId || m.LoanerId == currentUserId && m.BorrowerId == item.LoanerId);
             if (existingChat != null)
             {
                 return RedirectToAction("Message", new { id = existingChat.Id }); // TODO test this
@@ -74,7 +125,7 @@ namespace Dissertation.Areas.Member.Controllers
             }
 
             var existingChat = await _context.Chats
-                .FirstOrDefaultAsync(m => m.LoanerId == item.LoanerId && m.BorrowerId == currentUserId);
+                .FirstOrDefaultAsync(m => m.LoanerId == item.LoanerId && m.BorrowerId == currentUserId || m.LoanerId == currentUserId && m.BorrowerId == item.LoanerId);
             if (existingChat != null)
             {
                 return RedirectToAction("LoadChat", new { id = existingChat.Id }); // TODO test this
@@ -92,7 +143,7 @@ namespace Dissertation.Areas.Member.Controllers
             {
                 Message message = new Message();
                 message.ChatId = chat.Id;
-                message.messageContent = messageContent;
+                message.MessageContent = messageContent;
                 message.SenderId = currentUserId;
                 message.Timestamp = DateTime.Now;
 
@@ -161,11 +212,20 @@ namespace Dissertation.Areas.Member.Controllers
                 return NotFound();
             }
 
+            string? key = Environment.GetEnvironmentVariable("DISSERTATION_AES_KEY", EnvironmentVariableTarget.User);
+            if (key == null)
+            {
+                return NotFound();
+            }
+
+            var (cipherText, IV) = EncryptString(messageContent, key);
+
             Message message = new Message();
             message.ChatId = chat.Id;
-            message.messageContent = messageContent;
+            message.MessageContent = cipherText;
             message.SenderId = currentUserId;
             message.Timestamp = DateTime.Now;
+            message.IV = IV;
 
             _context.Add(message);
             await _context.SaveChangesAsync();
@@ -180,13 +240,30 @@ namespace Dissertation.Areas.Member.Controllers
                 return NotFound();
             }
 
+            string? key = Environment.GetEnvironmentVariable("DISSERTATION_AES_KEY", EnvironmentVariableTarget.User);
+            if (key == null)
+            {
+                return NotFound();
+            }
+
             int messagesToLoad = 15;
             var messages = await _context.Messages
                              .Where(m => m.ChatId == id)
                              .OrderByDescending(m => m.Timestamp)
                              .Skip(messagesLoaded)
                              .Take(messagesToLoad)
+                             .Include(m => m.Sender)
                              .ToListAsync();
+
+            var decryptedMessages = messages.Select(m => new Message
+            {
+                Id = m.Id,
+                ChatId = m.ChatId,
+                MessageContent = DecryptString(m.MessageContent, key, m.IV),
+                SenderId = m.SenderId,
+                Timestamp = m.Timestamp,
+                IV = m.IV,
+            }).ToList();
 
             bool endOfMessages = false;
             if (messages.Count() < messagesToLoad)
@@ -194,7 +271,7 @@ namespace Dissertation.Areas.Member.Controllers
                 endOfMessages = true;
             }
 
-            return Json(new { messages = messages, endOfMessages = endOfMessages });
+            return Json(new { messages = decryptedMessages, endOfMessages = endOfMessages });
         }
     }
 }

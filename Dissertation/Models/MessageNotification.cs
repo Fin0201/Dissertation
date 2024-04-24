@@ -10,20 +10,15 @@ namespace Dissertation.Models
         public int Id { get; set; }
 
         [Required]
-        public int ChatMessageId { get; set; }
+        public int ChatId { get; set; }
 
-        [ForeignKey("ChatMessageId")]
-        public Message ChatMessage { get; set; }
+        [ForeignKey("ChatId")]
+        public Chat Chat { get; set; }
 
         [Required]
         public string RecipientId { get; set; }
 
         [ForeignKey("RecipientId")]
         public IdentityUser Recipient { get; set; }
-
-        [Required]
-        public bool HasOpened { get; set; }
-
-        // Do Recipient hasOpened in messages instead of allo this
     }
 }

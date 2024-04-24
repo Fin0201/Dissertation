@@ -70,8 +70,13 @@ Search for TODO in all pages
 
 Remove all breakpoints lol
 
+Add to a csv for ai when the message button is clicked on a new product
 
 Selenium
+
+Require users to make actual deposit to site that wikllget rturned
+
+User account ratings. Add to profile
 
 https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=vs
 Add-Migration InitialCreate

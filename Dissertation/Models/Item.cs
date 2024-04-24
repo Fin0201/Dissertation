@@ -17,6 +17,10 @@ namespace Dissertation.Models
         public string Description { get; set; }
 
         [Required]
+        [RegularExpression(@"^\d+(\.\d{1,2})?$", ErrorMessage = "Price must be a positive number with up to 2 decimal places")]
+        public decimal Price { get; set; }
+
+        [Required]
         public int MaxDays { get; set; }
 
         [Required]

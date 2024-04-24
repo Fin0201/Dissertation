@@ -31,7 +31,7 @@ function displayMessages(messages) {
     messages.forEach(function (message) {
         var li = document.createElement("li");
         var messageList = document.getElementById("messagesList");
-        li.textContent = `${user} says ${message.messageContent}`;
+        li.textContent = `${message.sender.userName} says ${message.messageContent}`;
 
         messageList.insertBefore(li, messagesList.firstChild);
     });

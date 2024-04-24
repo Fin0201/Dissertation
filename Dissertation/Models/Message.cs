@@ -10,7 +10,7 @@ namespace Dissertation.Models
         public int Id { get; set; }
 
         [Required]
-        public string messageContent { get; set; }
+        public string MessageContent { get; set; }
 
         [Required]
         public int ChatId { get; set; }
@@ -26,5 +26,8 @@ namespace Dissertation.Models
 
         [Required]
         public DateTime Timestamp { get; set; }
+
+        [Required]
+        public byte[] IV { get; set; }
     }
 }

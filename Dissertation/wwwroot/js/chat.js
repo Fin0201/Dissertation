@@ -24,7 +24,7 @@ document.getElementById("sendButton").addEventListener("click", function (event)
     var message = document.getElementById("messageInput").value;
     $.ajax({
         type: "POST",
-        url: url,
+        url: "/Member/Chat/SendMessage",
         data: { id: chatId, messageContent: message },
         success: function () {
             connection.invoke("SendMessage", user, message).catch(function (err) {

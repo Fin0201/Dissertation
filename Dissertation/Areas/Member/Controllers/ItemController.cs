@@ -58,7 +58,7 @@ namespace Dissertation.Areas.Member.Views
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,MaxDays,TotalStock,Category")] Item item, IFormFile imageFile)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,MaxDays,TotalStock,Category")] Item item, IFormFile imageFile)
         {
             var currentUserId = _userManager.GetUserId(User);
             if (currentUserId == null)
@@ -92,6 +92,7 @@ namespace Dissertation.Areas.Member.Views
                 await imageFile.CopyToAsync(stream);
             }
 
+            item.Price = Math.Round(item.Price, 2);
             item.CurrentStock = item.TotalStock;
             item.LoanerId = currentUserId;
             item.Status = Enums.ItemStatus.Available;
