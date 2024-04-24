@@ -32,7 +32,7 @@ namespace Dissertation.Areas.Member.Controllers
             {
                 
 
-                aes.Key = Encoding.UTF8.GetBytes(key);
+                aes.Key = Convert.FromBase64String(key);
                 aes.GenerateIV();
                 var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
 
@@ -56,7 +56,7 @@ namespace Dissertation.Areas.Member.Controllers
         {
             using (var aes = Aes.Create())
             {
-                aes.Key = Encoding.UTF8.GetBytes(key);
+                aes.Key = Convert.FromBase64String(key);
                 aes.IV = IV;
                 var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
 
