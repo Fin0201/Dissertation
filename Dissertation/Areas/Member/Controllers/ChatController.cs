@@ -1,15 +1,11 @@
-﻿using Azure.Messaging;
-using Dissertation.Areas.Member.Models;
+﻿using Dissertation.Areas.Member.Models;
 using Dissertation.Data;
 using Dissertation.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Buffers.Text;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace Dissertation.Areas.Member.Controllers
 {
@@ -26,12 +22,10 @@ namespace Dissertation.Areas.Member.Controllers
             _userManager = userManager;
         }
 
-        public static (string, byte[]) EncryptString(string plainText, string key)
+        public static (string, string) EncryptString(string plainMessage, string key)
         {
             using (var aes = Aes.Create())
             {
-                
-
                 aes.Key = Convert.FromBase64String(key);
                 aes.GenerateIV();
                 var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
@@ -42,25 +36,26 @@ namespace Dissertation.Areas.Member.Controllers
                     {
                         using (var sw = new StreamWriter(cs))
                         {
-                            sw.Write(plainText);
+                            sw.Write(plainMessage);
                         }
                     }
 
-                    string cipherText = Convert.ToBase64String(ms.ToArray());
-                    return (cipherText, aes.IV);
+                    string cipherMessage = Convert.ToBase64String(ms.ToArray());
+                    string IV = Convert.ToBase64String(aes.IV);
+                    return (cipherMessage, IV);
                 }
             }
         }
-
-        public static string DecryptString(string cipherText, string key, byte[] IV)
+        
+        public static string DecryptString(string cipherMessage, string key, string IV)
         {
             using (var aes = Aes.Create())
             {
                 aes.Key = Convert.FromBase64String(key);
-                aes.IV = IV;
+                aes.IV = Convert.FromBase64String(IV);
                 var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
 
-                using (var ms = new MemoryStream(Convert.FromBase64String(cipherText)))
+                using (var ms = new MemoryStream(Convert.FromBase64String(cipherMessage)))
                 {
                     using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
                     {
@@ -94,7 +89,8 @@ namespace Dissertation.Areas.Member.Controllers
             }
 
             var existingChat = await _context.Chats
-                .FirstOrDefaultAsync(m => m.LoanerId == item.LoanerId && m.BorrowerId == currentUserId || m.LoanerId == currentUserId && m.BorrowerId == item.LoanerId);
+                .FirstOrDefaultAsync(m => m.LoanerId == item.LoanerId && m.BorrowerId == currentUserId ||
+                                     m.LoanerId == currentUserId && m.BorrowerId == item.LoanerId);
             if (existingChat != null)
             {
                 return RedirectToAction("Message", new { id = existingChat.Id }); // TODO test this
@@ -125,10 +121,17 @@ namespace Dissertation.Areas.Member.Controllers
             }
 
             var existingChat = await _context.Chats
-                .FirstOrDefaultAsync(m => m.LoanerId == item.LoanerId && m.BorrowerId == currentUserId || m.LoanerId == currentUserId && m.BorrowerId == item.LoanerId);
+                .FirstOrDefaultAsync(m => m.LoanerId == item.LoanerId && m.BorrowerId == currentUserId ||
+                                     m.LoanerId == currentUserId && m.BorrowerId == item.LoanerId);
             if (existingChat != null)
             {
                 return RedirectToAction("LoadChat", new { id = existingChat.Id }); // TODO test this
+            }
+
+            string? key = Environment.GetEnvironmentVariable("DISSERTATION_AES_KEY", EnvironmentVariableTarget.User);
+            if (key == null)
+            {
+                return NotFound();
             }
 
             Chat chat = new Chat();
@@ -141,11 +144,14 @@ namespace Dissertation.Areas.Member.Controllers
 
             if (!string.IsNullOrEmpty(messageContent))
             {
+                var (cipherMessage, IV) = EncryptString(messageContent, key);
+
                 Message message = new Message();
                 message.ChatId = chat.Id;
-                message.MessageContent = messageContent;
+                message.MessageContent = cipherMessage;
                 message.SenderId = currentUserId;
                 message.Timestamp = DateTime.Now;
+                message.IV = IV;
 
                 _context.Add(message);
                 await _context.SaveChangesAsync();
@@ -218,11 +224,11 @@ namespace Dissertation.Areas.Member.Controllers
                 return NotFound();
             }
 
-            var (cipherText, IV) = EncryptString(messageContent, key);
+            var (cipherMessage, IV) = EncryptString(messageContent, key);
 
             Message message = new Message();
             message.ChatId = chat.Id;
-            message.MessageContent = cipherText;
+            message.MessageContent = cipherMessage;
             message.SenderId = currentUserId;
             message.Timestamp = DateTime.Now;
             message.IV = IV;
@@ -246,6 +252,8 @@ namespace Dissertation.Areas.Member.Controllers
                 return NotFound();
             }
 
+            var currentUserId = _userManager.GetUserId(User);
+
             int messagesToLoad = 15;
             var messages = await _context.Messages
                              .Where(m => m.ChatId == id)
@@ -259,7 +267,9 @@ namespace Dissertation.Areas.Member.Controllers
             {
                 Id = m.Id,
                 ChatId = m.ChatId,
-                MessageContent = DecryptString(m.MessageContent, key, m.IV),
+                MessageContent = String.IsNullOrEmpty(m.MessageContent) ? DecryptString(m.MessageContent, key, m.IV) : m.MessageContent, // Test with null values
+                ImagePath = m.ImagePath, // Test with null values
+                Sender = m.Sender,
                 SenderId = m.SenderId,
                 Timestamp = m.Timestamp,
                 IV = m.IV,
@@ -271,7 +281,7 @@ namespace Dissertation.Areas.Member.Controllers
                 endOfMessages = true;
             }
 
-            return Json(new { messages = decryptedMessages, endOfMessages = endOfMessages });
+            return Json(new { messages = decryptedMessages, endOfMessages = endOfMessages, currentUserId = currentUserId });
         }
     }
 }

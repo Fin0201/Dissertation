@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dissertation.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240424000024_M1")]
+    [Migration("20240424195449_M1")]
     partial class M1
     {
         /// <inheritdoc />
@@ -137,12 +137,14 @@ namespace Dissertation.Migrations
                     b.Property<int>("ChatId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<byte[]>("IV")
+                    b.Property<string>("IV")
                         .IsRequired()
-                        .HasColumnType("BLOB");
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("MessageContent")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SenderId")
@@ -266,15 +268,15 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f6b829bd-39a5-4991-bcbb-64e31693a757",
-                            ConcurrencyStamp = "cf4f16bc-b693-44c1-8aed-280dad180712",
+                            Id = "155250eb-08c4-43fd-8199-5890dfda4f36",
+                            ConcurrencyStamp = "df9332f1-e533-4d66-ab0b-e328e9c79d08",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "02191a2e-bf64-480b-b58b-086e2c2a7954",
-                            ConcurrencyStamp = "19a44e75-e780-4306-982e-63f7fd9ee6af",
+                            Id = "4d20afe2-626d-4c53-81b9-9ba5dd06599d",
+                            ConcurrencyStamp = "80107d57-7b65-4d4d-b09c-30170621ab55",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         });
@@ -369,33 +371,33 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a8320121-69b6-42fb-83b8-1d761b36584c",
+                            Id = "b8c2d752-393d-4ba1-9766-bb559f6ba142",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "42abb4c3-b23b-408a-aad3-1cd8bd9d46d0",
+                            ConcurrencyStamp = "224e4729-db3c-4989-b91e-68edfbf30e6d",
                             Email = "admin@test.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@TEST.COM",
                             NormalizedUserName = "ADMIN@TEST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEC7pkZoHgTrNAOOeGBohkw7469DUibRn5Qe0+1J0/uRgW71G1UqdCFZW6vZc7MwOlQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAED/LQQnH3xRDye//Oo4JA8Y4N/yFL98c45L8+2D1UbtSk2s9/+ff+JZ3cvAavvKUnA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "71855e7d-548d-44f7-acfa-f65dce3e7ec9",
+                            SecurityStamp = "ce3c49ea-3700-4a3e-a88e-5e4c982c96db",
                             TwoFactorEnabled = false,
                             UserName = "AdminAccount"
                         },
                         new
                         {
-                            Id = "cf4abe22-2203-4f6c-91fe-a7ffd873f4c1",
+                            Id = "b147a963-702e-41a4-a398-8242bc12f738",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4d59f785-b89f-4e2c-88eb-86b76a731c41",
+                            ConcurrencyStamp = "cdf9631f-d181-4fed-acb2-0aced3e9a6dd",
                             Email = "member@test.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "MEMBER@TEST.COM",
                             NormalizedUserName = "MEMBER@TEST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAENgJ/AhAgWp0XQiwkRkm9OglcriPjB9xIwE2ukwNiuUDgrFrIH4AMQb/adXiS2n/Dg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOUFedv8rDDORvEmqfCp0pke1zNCM1AvINrPlEW/Q+xR5gnQAKaW3dm9pXVO6NVbyw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "86153fd2-a124-4b14-a578-dd8fadb4667b",
+                            SecurityStamp = "1257cecd-ed25-4ec4-922a-461e63a7959c",
                             TwoFactorEnabled = false,
                             UserName = "MemberAccount"
                         });
@@ -463,18 +465,18 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "a8320121-69b6-42fb-83b8-1d761b36584c",
-                            RoleId = "f6b829bd-39a5-4991-bcbb-64e31693a757"
+                            UserId = "b8c2d752-393d-4ba1-9766-bb559f6ba142",
+                            RoleId = "155250eb-08c4-43fd-8199-5890dfda4f36"
                         },
                         new
                         {
-                            UserId = "a8320121-69b6-42fb-83b8-1d761b36584c",
-                            RoleId = "02191a2e-bf64-480b-b58b-086e2c2a7954"
+                            UserId = "b8c2d752-393d-4ba1-9766-bb559f6ba142",
+                            RoleId = "4d20afe2-626d-4c53-81b9-9ba5dd06599d"
                         },
                         new
                         {
-                            UserId = "cf4abe22-2203-4f6c-91fe-a7ffd873f4c1",
-                            RoleId = "02191a2e-bf64-480b-b58b-086e2c2a7954"
+                            UserId = "b147a963-702e-41a4-a398-8242bc12f738",
+                            RoleId = "4d20afe2-626d-4c53-81b9-9ba5dd06599d"
                         });
                 });
 

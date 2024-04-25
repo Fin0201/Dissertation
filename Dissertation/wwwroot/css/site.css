@@ -38,3 +38,14 @@ body {
     text-align: center;
     font-weight: 200;
 }
+
+
+.chat-bubble {
+    max-width: 60%; /* Maximum width of the bubble */
+    padding: 10px 20px; /* Padding around the text */
+    background-color: #f0f0f0; /* Background color of the bubble */
+    border-radius: 20px; /* Rounded corners for the bubble */
+    border: 1px solid #ccc; /* Optional: adds a border */
+    margin: 10px;
+    word-wrap: break-word; /* Ensures the text wraps within the bubble */
+}

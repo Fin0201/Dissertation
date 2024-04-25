@@ -9,8 +9,9 @@ namespace Dissertation.Models
         [Key]
         public int Id { get; set; }
 
-        [Required]
-        public string MessageContent { get; set; }
+        public string? MessageContent { get; set; }
+
+        public string? ImagePath { get; set; }
 
         [Required]
         public int ChatId { get; set; }
@@ -28,6 +29,6 @@ namespace Dissertation.Models
         public DateTime Timestamp { get; set; }
 
         [Required]
-        public byte[] IV { get; set; }
+        public string IV { get; set; }
     }
 }

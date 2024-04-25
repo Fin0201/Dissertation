@@ -13,7 +13,7 @@ function loadMessages() {
         url: "/Member/Chat/LoadMessages",
         data: { id: chatId, messagesLoaded: messagesLoaded },
         success: function (messageData) {
-            displayMessages(messageData.messages)
+            displayMessages(messageData)
             if (messageData.endOfMessages && loadButton) {
                 document.getElementById("loadPrevious").remove();
             } else if (loadButton) {
@@ -27,12 +27,17 @@ function loadMessages() {
     });
 }
 
-function displayMessages(messages) {
-    messages.forEach(function (message) {
+function displayMessages(messageData) {
+    messageData.messages.forEach(function (message) {
         var li = document.createElement("li");
+        if (messageData.currentUserId == message.senderId) {
+            li.className = "primary-message";
+        } else {
+            li.className = "secondary-message";
+        }
         var messageList = document.getElementById("messagesList");
         li.textContent = `${message.sender.userName} says ${message.messageContent}`;
 
-        messageList.insertBefore(li, messagesList.firstChild);
+        messageList.insertBefore(li, messageList.firstChild);
     });
 }
