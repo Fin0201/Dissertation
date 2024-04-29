@@ -30,7 +30,9 @@ namespace Dissertation.Models
 
         /*public List<string> ImagePaths { get; set; }*/
 
-        public string? ImageFilename { get; set; } // Not storing the full path because HTML and C# require slightly different paths to access the same file.
+        public string? ImagePath { get; set; } // Not storing the full path because HTML and C# require slightly different paths to access the same file.
+
+        public string? ThumbnailPath { get; set; }
 
         public ItemStatus Status { get; set; }
 

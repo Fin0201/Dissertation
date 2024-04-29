@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Dissertation.Models;
 using Dissertation.Data;
+using Dissertation.Services;
 using System.Security.Claims;
 
 namespace Dissertation.Areas.Member.Views
@@ -12,13 +13,15 @@ namespace Dissertation.Areas.Member.Views
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly string[] allowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".jfif"];
+        private readonly IImageUploadService _imageUploadService;
+        private readonly string[] allowedExtensions = [".jpg", ".jpeg", ".png", ".webp"];
 
 
-        public ItemController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public ItemController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IImageUploadService imageUploadService)
         {
             _context = context;
             _userManager = userManager;
+            _imageUploadService = imageUploadService;
         }
 
         // GET: Member/Item
@@ -71,32 +74,45 @@ namespace Dissertation.Areas.Member.Views
                 return View(item);
             }
 
-            string fileExtension = Path.GetExtension(imageFile.FileName);
+            /*string fileExtension = Path.GetExtension(imageFile.FileName);
             if (!allowedExtensions.Contains(fileExtension))
             {
                 ModelState.AddModelError("ImageFile", "Invalid file type. Only JPG, JPEG, PNG, GIF, BMP, WebP, and JFIF files are allowed.");
                 return View(item);
-            }
-            
-            string fileName = Guid.NewGuid().ToString() + fileExtension;
-            string basePath = "wwwroot/images/user-uploads";
-            string imagePath = Path.Combine(basePath, fileName);
+            }*/
 
-            if (!Directory.Exists(basePath))
+            string fileNameWithoutExt = Guid.NewGuid().ToString();
+            string fileExtension = Path.GetExtension(imageFile.FileName);
+            string fileName = fileNameWithoutExt + fileExtension;
+            string thumbnailName = fileNameWithoutExt + "_thumb.webp";
+            string imagePath = Path.Combine("wwwroot/images/user-uploads", fileName);
+            string thumbnailPath = Path.Combine("wwwroot/images/user-uploads", thumbnailName);
+            /*string imagePath = Path.Combine(containingFolder, fileName);*/
+
+            /*string error = _imageUploadService.UploadImage(imageFile, fileName, containingFolder);*/
+            string? errorMessage = _imageUploadService.UploadImage(imageFile, imagePath, thumbnailPath).Result;
+            if (errorMessage != null)
             {
-                Directory.CreateDirectory(basePath);
+                ModelState.AddModelError("ImageFile", errorMessage);
+                return View(item);
+            }
+
+            /*if (!Directory.Exists(containingFolder))
+            {
+                Directory.CreateDirectory(containingFolder);
             }
 
             using (var stream = new FileStream(imagePath, FileMode.Create))
             {
                 await imageFile.CopyToAsync(stream);
-            }
+            }*/
 
             item.Price = Math.Round(item.Price, 2);
             item.CurrentStock = item.TotalStock;
             item.LoanerId = currentUserId;
             item.Status = Enums.ItemStatus.Available;
-            item.ImageFilename = fileName;
+            item.ImagePath = "/images/user-uploads/" + fileName; // Cannot have wwwroot for it to work in HTML.
+            item.ThumbnailPath = "/images/user-uploads/" + thumbnailName;
             item.AddedOn = DateTime.Now;
             item.ModifiedOn = DateTime.Now;
 
@@ -150,7 +166,7 @@ namespace Dissertation.Areas.Member.Views
             if (imageFile == null)
             {
                 ModelState.Remove("imageFile");
-                item.ImageFilename = existingItem.ImageFilename;
+                item.ImagePath = existingItem.ImagePath;
             }
 
             if (!ModelState.IsValid)
@@ -167,29 +183,22 @@ namespace Dissertation.Areas.Member.Views
             {
                 if (imageFile != null)
                 {
+                    string fileNameWithoutExt = Guid.NewGuid().ToString();
                     string fileExtension = Path.GetExtension(imageFile.FileName);
-                    if (!allowedExtensions.Contains(fileExtension))
-                    {
-                        ModelState.AddModelError("ImageFile", "Invalid file type. Only JPG, JPEG, PNG, GIF, BMP, WebP, and JFIF files are allowed.");
-                        return View(item);
-                    }
+                    string fileName = fileNameWithoutExt + fileExtension;
+                    string thumbnailName = fileNameWithoutExt + "_thumb.webp";
+                    string imagePath = Path.Combine("wwwroot/images/user-uploads", fileName);
+                    string thumbnailPath = Path.Combine("wwwroot/images/user-uploads", thumbnailName);
 
-                    string fileName = Guid.NewGuid().ToString() + fileExtension;
-                    string basePath = "wwwroot/images/user-uploads";
-                    string imagePath = Path.Combine(basePath, fileName);
-                    string exististingImagePath = Path.Combine(basePath, existingItem.ImageFilename);
+                    string exististingImagePath = Path.Combine("wwwroot", existingItem.ImagePath);
+                    string exististingThumbnailPath = Path.Combine("wwwroot", existingItem.ThumbnailPath);
 
-                    if (System.IO.File.Exists(exististingImagePath))
-                    {
-                        System.IO.File.Delete(exististingImagePath);
-                    }
+                    _imageUploadService.DeleteImage(exististingImagePath, exististingThumbnailPath);
 
-                    using (var stream = new FileStream(imagePath, FileMode.Create))
-                    {
-                        await imageFile.CopyToAsync(stream);
-                    }
+                    await _imageUploadService.UploadImage(imageFile, imagePath, thumbnailPath);
 
-                    item.ImageFilename = fileName;
+                    item.ImagePath = "/images/user-uploads/" + fileName;
+                    item.ThumbnailPath = "/images/user-uploads/" + thumbnailName;
                 }
 
                 _context.Update(item);
@@ -247,11 +256,10 @@ namespace Dissertation.Areas.Member.Views
             {
                 try
                 {
-                    string exististingFullPath = Path.Combine("wwwroot/images/user-uploads", item.ImageFilename);
-                    if (System.IO.File.Exists(exististingFullPath))
-                    {
-                        System.IO.File.Delete(exististingFullPath);
-                    }
+                    string imagePath = Path.Combine("wwwroot", item.ImagePath);
+                    string thumbnailPath = Path.Combine("wwwroot", item.ThumbnailPath);
+
+                    _imageUploadService.DeleteImage(imagePath, thumbnailPath);
                 }
                 catch
                 {

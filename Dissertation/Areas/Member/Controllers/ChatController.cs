@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 
-namespace Dissertation.Areas.Member.Controllers
+namespace Dissertation.Areas.Member.Views
 {
     [Area("Member")]
     [Authorize(Roles = "Member")]

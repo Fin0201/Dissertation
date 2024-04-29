@@ -41,13 +41,15 @@ Update what is displayed on view indexes
 
 Actually implement the status thing
 
+perchanceth merge the member area into the main one bcause it isnt really needed for most things.
+
 
 Fix Bootswatch
 
 clean up all of the string? and = "" stuff in the models. make it consistant also [Required]
 Current stock is not ? and is required but doesnt show up on isvalid
 
-Make sure image upload oinly accepts images (if it doesnt already, add a whitelist for file extensions or search for another solution)
+Make sure image upload oinly accepts images (if it doesnt already, add a whitelist for file extensions or search for another solution - also do this for chat images lol)
 
 
 CHANGE NAMES so they are Max Days instead of MaxDays
@@ -57,6 +59,8 @@ Only allow specific members to edit their own items
 Comments
 
 Change temp name of Gadget Loaner
+
+Change the name of the users in the mesage model. Maybe something like ChatStarter and ChatNotStarter
 
 Favicon
 
@@ -77,6 +81,8 @@ Selenium
 Require users to make actual deposit to site that wikllget rturned
 
 User account ratings. Add to profile
+
+Uninstall csvhelper if it is not being used
 
 https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=vs
 Add-Migration InitialCreate
