@@ -111,6 +111,7 @@ namespace Dissertation.Areas.Member.Views
             item.CurrentStock = item.TotalStock;
             item.LoanerId = currentUserId;
             item.Status = Enums.ItemStatus.Available;
+            item.AverageRating = 0;
             item.ImagePath = "/images/user-uploads/" + fileName; // Cannot have wwwroot for it to work in HTML.
             item.ThumbnailPath = "/images/user-uploads/" + thumbnailName;
             item.AddedOn = DateTime.Now;
@@ -178,6 +179,7 @@ namespace Dissertation.Areas.Member.Views
             item.AddedOn = existingItem.AddedOn;
             item.ModifiedOn = DateTime.Now;
             item.LoanerId = existingItem.LoanerId;
+            item.AverageRating = existingItem.AverageRating;
 
             try
             {

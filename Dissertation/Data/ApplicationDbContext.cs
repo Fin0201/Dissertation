@@ -17,7 +17,6 @@ namespace Dissertation.Data
         public DbSet<Rent> Rents { get; set; }
         public DbSet<Chat> Chats { get; set; }
         public DbSet<Message> Messages { get; set; }
-        public DbSet<MessageNotification> MessageNotifications { get; set; }
         public DbSet<Review> Reviews { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)

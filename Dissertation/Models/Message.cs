@@ -26,6 +26,9 @@ namespace Dissertation.Models
         public IdentityUser Sender { get; set; }
 
         [Required]
+        public bool RecipientRead { get; set; }
+
+        [Required]
         public DateTime Timestamp { get; set; }
 
         [Required]

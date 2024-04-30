@@ -89,8 +89,8 @@ namespace Dissertation.Areas.Member.Views
             }
 
             var existingChat = await _context.Chats
-                .FirstOrDefaultAsync(m => m.LoanerId == item.LoanerId && m.BorrowerId == currentUserId ||
-                                     m.LoanerId == currentUserId && m.BorrowerId == item.LoanerId);
+                .FirstOrDefaultAsync(m => m.UserOneId == item.LoanerId && m.UserTwoId == currentUserId ||
+                                     m.UserOneId == currentUserId && m.UserTwoId == item.LoanerId);
             if (existingChat != null)
             {
                 return RedirectToAction("Message", new { id = existingChat.Id }); // TODO test this
@@ -121,8 +121,8 @@ namespace Dissertation.Areas.Member.Views
             }
 
             var existingChat = await _context.Chats
-                .FirstOrDefaultAsync(m => m.LoanerId == item.LoanerId && m.BorrowerId == currentUserId ||
-                                     m.LoanerId == currentUserId && m.BorrowerId == item.LoanerId);
+                .FirstOrDefaultAsync(m => m.UserOneId == item.LoanerId && m.UserTwoId == currentUserId ||
+                                     m.UserOneId == currentUserId && m.UserTwoId == item.LoanerId);
             if (existingChat != null)
             {
                 return RedirectToAction("LoadChat", new { id = existingChat.Id }); // TODO test this
@@ -135,8 +135,8 @@ namespace Dissertation.Areas.Member.Views
             }
 
             Chat chat = new Chat();
-            chat.LoanerId = item.LoanerId;
-            chat.BorrowerId = currentUserId;
+            chat.UserOneId = currentUserId;
+            chat.UserTwoId = item.LoanerId;
             chat.StartedOn = DateTime.Now;
 
             _context.Add(chat);
@@ -180,7 +180,7 @@ namespace Dissertation.Areas.Member.Views
                 return NotFound();
             }
 
-            if (currentUserId != chat.LoanerId && currentUserId != chat.BorrowerId)
+            if (currentUserId != chat.UserOneId && currentUserId != chat.UserTwoId)
             {
                 return NotFound();
             }
@@ -213,7 +213,7 @@ namespace Dissertation.Areas.Member.Views
                 return NotFound();
             }
 
-            if (currentUserId != chat.LoanerId && currentUserId != chat.BorrowerId)
+            if (currentUserId != chat.UserOneId && currentUserId != chat.UserTwoId)
             {
                 return NotFound();
             }
@@ -230,6 +230,7 @@ namespace Dissertation.Areas.Member.Views
             message.ChatId = chat.Id;
             message.MessageContent = cipherMessage;
             message.SenderId = currentUserId;
+            message.RecipientRead = false;
             message.Timestamp = DateTime.Now;
             message.IV = IV;
 
@@ -267,8 +268,8 @@ namespace Dissertation.Areas.Member.Views
             {
                 Id = m.Id,
                 ChatId = m.ChatId,
-                MessageContent = String.IsNullOrEmpty(m.MessageContent) ? DecryptString(m.MessageContent, key, m.IV) : m.MessageContent, // Test with null values
-                ImagePath = m.ImagePath, // Test with null values
+                MessageContent = String.IsNullOrEmpty(m.MessageContent) ? DecryptString(m.MessageContent, key, m.IV) : m.MessageContent,
+                ImagePath = m.ImagePath,
                 Sender = m.Sender,
                 SenderId = m.SenderId,
                 Timestamp = m.Timestamp,
@@ -282,6 +283,31 @@ namespace Dissertation.Areas.Member.Views
             }
 
             return Json(new { messages = decryptedMessages, endOfMessages = endOfMessages, currentUserId = currentUserId });
+        }
+
+        public void MarkMessagesRead(int? id)
+        {
+            if (id == null || _context.Messages == null)
+            {
+                return;
+            }
+
+            var currentUserId = _userManager.GetUserId(User);
+            if (currentUserId == null)
+            {
+                return;
+            }
+
+            var messages = _context.Messages
+                .Where(m => m.ChatId == id && m.SenderId != currentUserId && m.RecipientRead == false)
+                .ToList();
+
+            foreach (var message in messages)
+            {
+                message.RecipientRead = true;
+            }
+
+            _context.SaveChanges();
         }
     }
 }

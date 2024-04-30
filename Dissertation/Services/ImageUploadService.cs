@@ -20,8 +20,7 @@ namespace Dissertation.Services
             int currentHeight;
             int maxWidth = 240;
             int maxHeight = 135;
-            /*var imageBytes = new byte[imageFile.Length];
-            await imageFile.OpenReadStream().ReadAsync(imageBytes);*/
+
             using (var image = await Image.LoadAsync(filePath))
             {
                 currentHeight = image.Height;
@@ -31,9 +30,10 @@ namespace Dissertation.Services
                 {
                     int newWidth;
                     int newHeight;
-                    // Resizes the image to fit within the maximum dimensions while maintaining the aspect ratio
+                    // Checks if the image is landscape or portrait
                     if (currentWidth > currentHeight)
                     {
+                        // Resizes the image to fit within the maximum dimensions while maintaining the aspect ratio
                         newWidth = maxWidth;
                         newHeight = (int)Math.Round((float)(maxWidth / currentWidth * currentHeight));
                     }
@@ -42,12 +42,13 @@ namespace Dissertation.Services
                         newHeight = maxHeight;
                         newWidth = (int)Math.Round((float)(maxHeight / currentHeight * currentWidth));
                     }
+                    // Resizes the image
                     image.Mutate(x => x.Resize(newWidth, newHeight));
                 }
+                // Saves the image as a WebP file with the size modifications if applied
                 await image.SaveAsWebpAsync(thumbnailPath);
             }
         }
-
 
         public async Task<string?> UploadImage(IFormFile imageFile, string filePath, string thumbnailPath)
         {

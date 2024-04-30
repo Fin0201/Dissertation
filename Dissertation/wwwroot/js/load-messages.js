@@ -4,6 +4,20 @@ var messagesLoaded = 0;
 loadMessages();
 window.scrollTo(0, document.body.scrollHeight);
 
+function markAsRead() {
+    $.ajax({
+        type: "POST",
+        url: "/Member/Chat/MarkAsRead",
+        data: { id: chatId },
+        success: function () {
+            console.log("Marked as read");
+        },
+        error: function () {
+            alert("Error marking as read.");
+        }
+    });
+}
+
 function loadMessages() {
     if (loadButton) {
         loadButton.disabled = true;

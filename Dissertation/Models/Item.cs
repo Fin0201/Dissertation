@@ -28,7 +28,7 @@ namespace Dissertation.Models
 
         public int CurrentStock { get; set; }
 
-        /*public List<string> ImagePaths { get; set; }*/
+        public int AverageRating { get; set; }
 
         public string? ImagePath { get; set; } // Not storing the full path because HTML and C# require slightly different paths to access the same file.
 
