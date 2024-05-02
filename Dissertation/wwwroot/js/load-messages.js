@@ -2,7 +2,14 @@
 var messagesLoaded = 0;
 
 loadMessages();
+markAsRead();
 window.scrollTo(0, document.body.scrollHeight);
+
+function isUserAtBottom() {
+    var totalPageHeight = document.body.scrollHeight;
+    var scrollPoint = window.scrollY + window.innerHeight;
+    return scrollPoint >= totalPageHeight;
+}
 
 function markAsRead() {
     $.ajax({
@@ -55,3 +62,10 @@ function displayMessages(messageData) {
         messageList.insertBefore(li, messageList.firstChild);
     });
 }
+
+window.addEventListener('scroll', () => {
+    // Check if the user is at the bottom of the page
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+        markAsRead();
+    }
+});

@@ -268,7 +268,7 @@ namespace Dissertation.Areas.Member.Views
             {
                 Id = m.Id,
                 ChatId = m.ChatId,
-                MessageContent = String.IsNullOrEmpty(m.MessageContent) ? DecryptString(m.MessageContent, key, m.IV) : m.MessageContent,
+                MessageContent = String.IsNullOrEmpty(m.MessageContent) ? "" : DecryptString(m.MessageContent, key, m.IV),
                 ImagePath = m.ImagePath,
                 Sender = m.Sender,
                 SenderId = m.SenderId,
@@ -285,7 +285,7 @@ namespace Dissertation.Areas.Member.Views
             return Json(new { messages = decryptedMessages, endOfMessages = endOfMessages, currentUserId = currentUserId });
         }
 
-        public void MarkMessagesRead(int? id)
+        public void MarkAsRead(int? id)
         {
             if (id == null || _context.Messages == null)
             {

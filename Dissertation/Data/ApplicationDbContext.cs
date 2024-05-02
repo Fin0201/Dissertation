@@ -13,7 +13,6 @@ namespace Dissertation.Data
         string MemberId = Guid.NewGuid().ToString();
 
         public DbSet<Item> Items { get; set; }
-        public DbSet<ItemInterest> ItemInterests { get; set; }
         public DbSet<Rent> Rents { get; set; }
         public DbSet<Chat> Chats { get; set; }
         public DbSet<Message> Messages { get; set; }
