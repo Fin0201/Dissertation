@@ -23,12 +23,6 @@ namespace Dissertation.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("BorrowerId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LoanerId")
-                        .HasColumnType("TEXT");
-
                     b.Property<DateTime>("StartedOn")
                         .HasColumnType("TEXT");
 
@@ -42,9 +36,9 @@ namespace Dissertation.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BorrowerId");
+                    b.HasIndex("UserOneId");
 
-                    b.HasIndex("LoanerId");
+                    b.HasIndex("UserTwoId");
 
                     b.ToTable("Chats");
                 });
@@ -227,15 +221,15 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "76965327-f1e5-4d82-bd7a-9e464d58c6c6",
-                            ConcurrencyStamp = "71b6f00e-1014-4838-80f0-4b5cb09113b3",
+                            Id = "c2e11790-a2e5-4913-b26e-5b1bf0e88117",
+                            ConcurrencyStamp = "60ef556b-a7de-48d2-8809-3190f2689946",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "45508d01-15d0-42e5-9b84-9d64fb25c123",
-                            ConcurrencyStamp = "3b2115e3-2ded-4845-a994-a321f3bf06e5",
+                            Id = "17162f85-6e3c-4128-87f3-ba161ac76c9a",
+                            ConcurrencyStamp = "224df7c9-204e-4148-a050-5f972211c125",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         });
@@ -330,33 +324,33 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "25e3999c-18f0-40ab-a932-22b095d2b22e",
+                            Id = "95b96efc-431a-4c87-81be-ae54ccce6db1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e8d576ad-ce38-4b09-80e9-56f50385450a",
+                            ConcurrencyStamp = "af5c1381-fc1e-472c-8a5f-3965b6dc9574",
                             Email = "admin@test.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@TEST.COM",
                             NormalizedUserName = "ADMIN@TEST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDg0lCXwFfZMrUu7KRPQBfe1N86dwMTclmopBwsaAc/gjbhoaQowDLopb842kWfLDg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOLJmxsv3ITOvQ+ODWVLSh8uMI/3iwxBxxG/UEV+XycSI3pb7ECIim1HA2xF7A7ozA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "43091709-71b9-4c0b-af75-59b975d01fd5",
+                            SecurityStamp = "3e4862c2-ed13-4c4d-b4a6-88f5da2b8d9c",
                             TwoFactorEnabled = false,
                             UserName = "AdminAccount"
                         },
                         new
                         {
-                            Id = "fba5fe56-6879-45dd-a897-e7f885d0d3a3",
+                            Id = "5b639b54-82b5-454d-af10-43d29aabc673",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "734fe680-739a-46f6-b5c8-dcea2eeb4e4c",
+                            ConcurrencyStamp = "576a7970-79b7-4452-88d6-e13fc0c4d108",
                             Email = "member@test.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "MEMBER@TEST.COM",
                             NormalizedUserName = "MEMBER@TEST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAX4E7H8zC1ZScbCCo26pkqNcnl8gQhDxwXcqKyTIVbWgcS1ixc0+bvXrtYtRQuM9w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPNXCeCEDIAcj2m14jQ5pNt6zpVg/BEC1eIhq9vYpbmg+lP5fU1G57v8ZbEOZMd/AQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2e48e769-9233-45a0-b9cd-98c1aa77ab0a",
+                            SecurityStamp = "2dd6c42b-5546-4280-962a-f9a652acfc0a",
                             TwoFactorEnabled = false,
                             UserName = "MemberAccount"
                         });
@@ -424,18 +418,18 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "25e3999c-18f0-40ab-a932-22b095d2b22e",
-                            RoleId = "76965327-f1e5-4d82-bd7a-9e464d58c6c6"
+                            UserId = "95b96efc-431a-4c87-81be-ae54ccce6db1",
+                            RoleId = "c2e11790-a2e5-4913-b26e-5b1bf0e88117"
                         },
                         new
                         {
-                            UserId = "25e3999c-18f0-40ab-a932-22b095d2b22e",
-                            RoleId = "45508d01-15d0-42e5-9b84-9d64fb25c123"
+                            UserId = "95b96efc-431a-4c87-81be-ae54ccce6db1",
+                            RoleId = "17162f85-6e3c-4128-87f3-ba161ac76c9a"
                         },
                         new
                         {
-                            UserId = "fba5fe56-6879-45dd-a897-e7f885d0d3a3",
-                            RoleId = "45508d01-15d0-42e5-9b84-9d64fb25c123"
+                            UserId = "5b639b54-82b5-454d-af10-43d29aabc673",
+                            RoleId = "17162f85-6e3c-4128-87f3-ba161ac76c9a"
                         });
                 });
 
@@ -460,13 +454,17 @@ namespace Dissertation.Migrations
 
             modelBuilder.Entity("Dissertation.Models.Chat", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "UserTwo")
-                        .WithMany()
-                        .HasForeignKey("BorrowerId");
-
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "UserOne")
                         .WithMany()
-                        .HasForeignKey("LoanerId");
+                        .HasForeignKey("UserOneId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "UserTwo")
+                        .WithMany()
+                        .HasForeignKey("UserTwoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("UserOne");
 

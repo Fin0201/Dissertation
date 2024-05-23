@@ -285,17 +285,17 @@ namespace Dissertation.Areas.Member.Views
             return Json(new { messages = decryptedMessages, endOfMessages = endOfMessages, currentUserId = currentUserId });
         }
 
-        public void MarkAsRead(int? id)
+        public async Task<IActionResult> MarkAsRead(int? id)
         {
             if (id == null || _context.Messages == null)
             {
-                return;
+                return NoContent();
             }
 
             var currentUserId = _userManager.GetUserId(User);
             if (currentUserId == null)
             {
-                return;
+                return NoContent();
             }
 
             var messages = _context.Messages
@@ -307,7 +307,9 @@ namespace Dissertation.Areas.Member.Views
                 message.RecipientRead = true;
             }
 
-            _context.SaveChanges();
+            _context.UpdateRange(messages);
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
     }
 }

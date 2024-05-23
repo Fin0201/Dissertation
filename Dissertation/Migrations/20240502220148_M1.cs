@@ -165,24 +165,24 @@ namespace Dissertation.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     UserOneId = table.Column<string>(type: "TEXT", nullable: false),
-                    LoanerId = table.Column<string>(type: "TEXT", nullable: true),
                     UserTwoId = table.Column<string>(type: "TEXT", nullable: false),
-                    BorrowerId = table.Column<string>(type: "TEXT", nullable: true),
                     StartedOn = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Chats", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Chats_AspNetUsers_BorrowerId",
-                        column: x => x.BorrowerId,
+                        name: "FK_Chats_AspNetUsers_UserOneId",
+                        column: x => x.UserOneId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Chats_AspNetUsers_LoanerId",
-                        column: x => x.LoanerId,
+                        name: "FK_Chats_AspNetUsers_UserTwoId",
+                        column: x => x.UserTwoId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -302,8 +302,8 @@ namespace Dissertation.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "45508d01-15d0-42e5-9b84-9d64fb25c123", "3b2115e3-2ded-4845-a994-a321f3bf06e5", "Member", "MEMBER" },
-                    { "76965327-f1e5-4d82-bd7a-9e464d58c6c6", "71b6f00e-1014-4838-80f0-4b5cb09113b3", "Admin", "ADMIN" }
+                    { "17162f85-6e3c-4128-87f3-ba161ac76c9a", "224df7c9-204e-4148-a050-5f972211c125", "Member", "MEMBER" },
+                    { "c2e11790-a2e5-4913-b26e-5b1bf0e88117", "60ef556b-a7de-48d2-8809-3190f2689946", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
@@ -311,8 +311,8 @@ namespace Dissertation.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "25e3999c-18f0-40ab-a932-22b095d2b22e", 0, "e8d576ad-ce38-4b09-80e9-56f50385450a", "admin@test.com", false, false, null, "ADMIN@TEST.COM", "ADMIN@TEST.COM", "AQAAAAIAAYagAAAAEDg0lCXwFfZMrUu7KRPQBfe1N86dwMTclmopBwsaAc/gjbhoaQowDLopb842kWfLDg==", null, false, "43091709-71b9-4c0b-af75-59b975d01fd5", false, "AdminAccount" },
-                    { "fba5fe56-6879-45dd-a897-e7f885d0d3a3", 0, "734fe680-739a-46f6-b5c8-dcea2eeb4e4c", "member@test.com", false, false, null, "MEMBER@TEST.COM", "MEMBER@TEST.COM", "AQAAAAIAAYagAAAAEAX4E7H8zC1ZScbCCo26pkqNcnl8gQhDxwXcqKyTIVbWgcS1ixc0+bvXrtYtRQuM9w==", null, false, "2e48e769-9233-45a0-b9cd-98c1aa77ab0a", false, "MemberAccount" }
+                    { "5b639b54-82b5-454d-af10-43d29aabc673", 0, "576a7970-79b7-4452-88d6-e13fc0c4d108", "member@test.com", false, false, null, "MEMBER@TEST.COM", "MEMBER@TEST.COM", "AQAAAAIAAYagAAAAEPNXCeCEDIAcj2m14jQ5pNt6zpVg/BEC1eIhq9vYpbmg+lP5fU1G57v8ZbEOZMd/AQ==", null, false, "2dd6c42b-5546-4280-962a-f9a652acfc0a", false, "MemberAccount" },
+                    { "95b96efc-431a-4c87-81be-ae54ccce6db1", 0, "af5c1381-fc1e-472c-8a5f-3965b6dc9574", "admin@test.com", false, false, null, "ADMIN@TEST.COM", "ADMIN@TEST.COM", "AQAAAAIAAYagAAAAEOLJmxsv3ITOvQ+ODWVLSh8uMI/3iwxBxxG/UEV+XycSI3pb7ECIim1HA2xF7A7ozA==", null, false, "3e4862c2-ed13-4c4d-b4a6-88f5da2b8d9c", false, "AdminAccount" }
                 });
 
             migrationBuilder.InsertData(
@@ -320,9 +320,9 @@ namespace Dissertation.Migrations
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { "45508d01-15d0-42e5-9b84-9d64fb25c123", "25e3999c-18f0-40ab-a932-22b095d2b22e" },
-                    { "76965327-f1e5-4d82-bd7a-9e464d58c6c6", "25e3999c-18f0-40ab-a932-22b095d2b22e" },
-                    { "45508d01-15d0-42e5-9b84-9d64fb25c123", "fba5fe56-6879-45dd-a897-e7f885d0d3a3" }
+                    { "17162f85-6e3c-4128-87f3-ba161ac76c9a", "5b639b54-82b5-454d-af10-43d29aabc673" },
+                    { "17162f85-6e3c-4128-87f3-ba161ac76c9a", "95b96efc-431a-4c87-81be-ae54ccce6db1" },
+                    { "c2e11790-a2e5-4913-b26e-5b1bf0e88117", "95b96efc-431a-4c87-81be-ae54ccce6db1" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -363,14 +363,14 @@ namespace Dissertation.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Chats_BorrowerId",
+                name: "IX_Chats_UserOneId",
                 table: "Chats",
-                column: "BorrowerId");
+                column: "UserOneId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Chats_LoanerId",
+                name: "IX_Chats_UserTwoId",
                 table: "Chats",
-                column: "LoanerId");
+                column: "UserTwoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Items_LoanerId",

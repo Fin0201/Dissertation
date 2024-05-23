@@ -9,17 +9,16 @@ namespace Dissertation.Models
         [Key]
         public int Id { get; set; }
 
-        // Specifies the users involved in the chat
         [Required]
         public string UserOneId { get; set; }
 
-        [ForeignKey("LoanerId")]
+        [ForeignKey("UserOneId")]
         public IdentityUser UserOne { get; set; }
 
         [Required]
         public string UserTwoId { get; set; }
 
-        [ForeignKey("BorrowerId")]
+        [ForeignKey("UserTwoId")]
         public IdentityUser UserTwo { get; set; }
 
         [Required]
