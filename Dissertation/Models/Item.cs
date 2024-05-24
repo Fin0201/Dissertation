@@ -39,6 +39,9 @@ namespace Dissertation.Models
         [Required]
         public ItemCategory Category { get; set; }
 
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+
         public string? LoanerId { get; set; }
 
         [ForeignKey("LoanerId")]

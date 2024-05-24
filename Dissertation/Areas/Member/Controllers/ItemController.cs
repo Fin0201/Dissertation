@@ -14,22 +14,43 @@ namespace Dissertation.Areas.Member.Views
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IImageUploadService _imageUploadService;
+        private readonly ILocationService _locationService;
         private readonly string[] allowedExtensions = [".jpg", ".jpeg", ".png", ".webp"];
 
-
-        public ItemController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IImageUploadService imageUploadService)
+        public ItemController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IImageUploadService imageUploadService, ILocationService locationService)
         {
             _context = context;
             _userManager = userManager;
             _imageUploadService = imageUploadService;
+            _locationService = locationService;
         }
 
         // GET: Member/Item
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, double? lat, double? lon)
         {
-            return _context.Items != null ?
+            /*return _context.Items != null ?
                         View(await _context.Items.ToListAsync()) :
-                        Problem("Entity set 'ApplicationDbContext.Items' is null.");
+                        Problem("Entity set 'ApplicationDbContext.Items' is null.");*/
+            IQueryable<Item>? items;
+            if (lat.HasValue && lat.Value != 0 && lon.HasValue && lon.Value != 0)
+            {
+                items = from i in _context.Items
+                            where _locationService.HaversineDistance(i.Latitude, i.Longitude, lat.GetValueOrDefault(), lon.GetValueOrDefault(), 10)
+                            select i;
+            }
+            else 
+            {
+                items = from i in _context.Items
+                            where _locationService.HaversineDistance(i.Latitude, i.Longitude, lat.GetValueOrDefault(), lon.GetValueOrDefault(), 10)
+                            select i;
+            }
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+               items = items.Where(s => s.Name.Contains(searchString));
+            }
+
+            return View(await items.ToListAsync());
         }
 
         // GET: Member/Item/Details/5
@@ -61,7 +82,7 @@ namespace Dissertation.Areas.Member.Views
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,MaxDays,TotalStock,Category")] Item item, IFormFile imageFile)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,MaxDays,TotalStock,Category")] Item item, string postcode, IFormFile imageFile)
         {
             var currentUserId = _userManager.GetUserId(User);
             if (currentUserId == null)
@@ -74,12 +95,12 @@ namespace Dissertation.Areas.Member.Views
                 return View(item);
             }
 
-            /*string fileExtension = Path.GetExtension(imageFile.FileName);
-            if (!allowedExtensions.Contains(fileExtension))
+            var (lat, lon) = await _locationService.PostcodeToCoordinates(postcode);
+            if (lat == null || lon == null)
             {
-                ModelState.AddModelError("ImageFile", "Invalid file type. Only JPG, JPEG, PNG, GIF, BMP, WebP, and JFIF files are allowed.");
+                ModelState.AddModelError("Postcode", "Invalid postcode");
                 return View(item);
-            }*/
+            }
 
             string fileNameWithoutExt = Guid.NewGuid().ToString();
             string fileExtension = Path.GetExtension(imageFile.FileName);
@@ -87,25 +108,13 @@ namespace Dissertation.Areas.Member.Views
             string thumbnailName = fileNameWithoutExt + "_thumb.webp";
             string imagePath = Path.Combine("wwwroot/images/user-uploads", fileName);
             string thumbnailPath = Path.Combine("wwwroot/images/user-uploads", thumbnailName);
-            /*string imagePath = Path.Combine(containingFolder, fileName);*/
 
-            /*string error = _imageUploadService.UploadImage(imageFile, fileName, containingFolder);*/
             string? errorMessage = _imageUploadService.UploadImage(imageFile, imagePath, thumbnailPath).Result;
             if (errorMessage != null)
             {
                 ModelState.AddModelError("ImageFile", errorMessage);
                 return View(item);
             }
-
-            /*if (!Directory.Exists(containingFolder))
-            {
-                Directory.CreateDirectory(containingFolder);
-            }
-
-            using (var stream = new FileStream(imagePath, FileMode.Create))
-            {
-                await imageFile.CopyToAsync(stream);
-            }*/
 
             item.Price = Math.Round(item.Price, 2);
             item.CurrentStock = item.TotalStock;
@@ -116,6 +125,9 @@ namespace Dissertation.Areas.Member.Views
             item.ThumbnailPath = "/images/user-uploads/" + thumbnailName;
             item.AddedOn = DateTime.Now;
             item.ModifiedOn = DateTime.Now;
+            item.Latitude = lat.GetValueOrDefault();
+            item.Longitude = lon.GetValueOrDefault();
+
 
             _context.Add(item);
             await _context.SaveChangesAsync();
@@ -151,7 +163,7 @@ namespace Dissertation.Areas.Member.Views
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,MaxDays,TotalStock,Category")] Item item, IFormFile imageFile)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,MaxDays,TotalStock,Category")] Item item, string postcode, IFormFile imageFile)
         {
             if (id != item.Id)
             {
@@ -166,8 +178,15 @@ namespace Dissertation.Areas.Member.Views
 
             if (imageFile == null)
             {
+                // Image file can be null here because the user may not want to change the image.
                 ModelState.Remove("imageFile");
                 item.ImagePath = existingItem.ImagePath;
+            }
+
+            var (lat, lon) = await _locationService.PostcodeToCoordinates(postcode);
+            if (lat == null || lon == null)
+            {
+                ModelState.AddModelError("Postcode", "Invalid postcode");
             }
 
             if (!ModelState.IsValid)
@@ -180,6 +199,8 @@ namespace Dissertation.Areas.Member.Views
             item.ModifiedOn = DateTime.Now;
             item.LoanerId = existingItem.LoanerId;
             item.AverageRating = existingItem.AverageRating;
+            item.Latitude = lat.GetValueOrDefault();
+            item.Longitude = lon.GetValueOrDefault();
 
             try
             {

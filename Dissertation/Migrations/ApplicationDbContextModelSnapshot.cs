@@ -68,8 +68,14 @@ namespace Dissertation.Migrations
                     b.Property<string>("ImagePath")
                         .HasColumnType("TEXT");
 
+                    b.Property<double>("Latitude")
+                        .HasColumnType("REAL");
+
                     b.Property<string>("LoanerId")
                         .HasColumnType("TEXT");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("REAL");
 
                     b.Property<int>("MaxDays")
                         .HasColumnType("INTEGER");
@@ -221,15 +227,15 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c2e11790-a2e5-4913-b26e-5b1bf0e88117",
-                            ConcurrencyStamp = "60ef556b-a7de-48d2-8809-3190f2689946",
+                            Id = "f40d0b8c-2233-4471-a5db-c773a5fc960c",
+                            ConcurrencyStamp = "6f3092f1-d917-46ff-9a6a-66e626b3ca70",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "17162f85-6e3c-4128-87f3-ba161ac76c9a",
-                            ConcurrencyStamp = "224df7c9-204e-4148-a050-5f972211c125",
+                            Id = "8148d006-22d4-4476-8f56-9f58394eb957",
+                            ConcurrencyStamp = "d975eaa3-7c18-405a-b451-837ec163ae7b",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         });
@@ -324,33 +330,33 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "95b96efc-431a-4c87-81be-ae54ccce6db1",
+                            Id = "24d6fa9e-52f8-4a93-a218-868c18d74f4a",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "af5c1381-fc1e-472c-8a5f-3965b6dc9574",
+                            ConcurrencyStamp = "bfad8c9f-402a-4dcd-a8f6-e0ed62975b59",
                             Email = "admin@test.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@TEST.COM",
                             NormalizedUserName = "ADMIN@TEST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOLJmxsv3ITOvQ+ODWVLSh8uMI/3iwxBxxG/UEV+XycSI3pb7ECIim1HA2xF7A7ozA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEL+JaeDl6SDoK86EE7t0I0/4XrfriVte3mDH8WppaHcEGUC5HBO3s2lh7vsItoiM9A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3e4862c2-ed13-4c4d-b4a6-88f5da2b8d9c",
+                            SecurityStamp = "1a638862-38c0-4b29-9a56-b441c706ba02",
                             TwoFactorEnabled = false,
                             UserName = "AdminAccount"
                         },
                         new
                         {
-                            Id = "5b639b54-82b5-454d-af10-43d29aabc673",
+                            Id = "e359fffb-c5e9-46bb-a01d-ba88bf509c9d",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "576a7970-79b7-4452-88d6-e13fc0c4d108",
+                            ConcurrencyStamp = "6a37c9c2-48f0-4229-bf46-598dea817f8e",
                             Email = "member@test.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "MEMBER@TEST.COM",
                             NormalizedUserName = "MEMBER@TEST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEPNXCeCEDIAcj2m14jQ5pNt6zpVg/BEC1eIhq9vYpbmg+lP5fU1G57v8ZbEOZMd/AQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAo4OMNc4GLg+RC0rEcyhn+Poz4CqEdkOYe9wuBLm2I+h5m4dYiruE+H7uB8CATSSw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2dd6c42b-5546-4280-962a-f9a652acfc0a",
+                            SecurityStamp = "458e1451-bb40-4517-8b0b-a7aeb4cca921",
                             TwoFactorEnabled = false,
                             UserName = "MemberAccount"
                         });
@@ -418,18 +424,18 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "95b96efc-431a-4c87-81be-ae54ccce6db1",
-                            RoleId = "c2e11790-a2e5-4913-b26e-5b1bf0e88117"
+                            UserId = "24d6fa9e-52f8-4a93-a218-868c18d74f4a",
+                            RoleId = "f40d0b8c-2233-4471-a5db-c773a5fc960c"
                         },
                         new
                         {
-                            UserId = "95b96efc-431a-4c87-81be-ae54ccce6db1",
-                            RoleId = "17162f85-6e3c-4128-87f3-ba161ac76c9a"
+                            UserId = "24d6fa9e-52f8-4a93-a218-868c18d74f4a",
+                            RoleId = "8148d006-22d4-4476-8f56-9f58394eb957"
                         },
                         new
                         {
-                            UserId = "5b639b54-82b5-454d-af10-43d29aabc673",
-                            RoleId = "17162f85-6e3c-4128-87f3-ba161ac76c9a"
+                            UserId = "e359fffb-c5e9-46bb-a01d-ba88bf509c9d",
+                            RoleId = "8148d006-22d4-4476-8f56-9f58394eb957"
                         });
                 });
 
