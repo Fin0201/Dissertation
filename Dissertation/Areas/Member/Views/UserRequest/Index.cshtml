@@ -2,10 +2,10 @@
 @using Dissertation.Areas.Member.Models
 @inject SignInManager<IdentityUser> signInManager
 @inject UserManager<IdentityUser> userManager
-@model IEnumerable<ChatNotificationViewModel>
+@model IEnumerable<UserRequest>
 
 @{
-    ViewData["Title"] = "Chats";
+    ViewData["Title"] = "Requests";
 	string userId = "";
 }
 
@@ -17,33 +17,33 @@
 <h1>Chats</h1>
 
 <div class="container">
-	@foreach (var chat in Model)
+	@foreach (var request in Model)
 	{
 		<div class="row">
-			<a asp-area="Member" asp-controller="Chat" asp-action="Message" asp-route-id="@chat.Chat.Id">
+			<a asp-area="Member" asp-controller="Chat" asp-action="Message" asp-route-id="@request.RenterId">
 				<div class="chat-box">
 					<div class="col">
 						<div class="chat-item-content">
-							@if (chat.Chat.UserOneId == userId)
+							@if (request.RenterId == userId)
 							{
-								<p style="margin-bottom: 0" class="chat-card-text">Chat with: @chat.Chat.UserTwo.UserName</p>
+								<p style="margin-bottom: 0" class="chat-card-text">Chat with: @request.Renter.UserName</p>
 							}
 							else
 							{
-								<p style="margin-bottom: 0" class="chat-card-text">Chat with: @chat.Chat.UserOne.UserName</p>
+								@* <p style="margin-bottom: 0" class="chat-card-text">Chat with: @request.UserOne.UserName</p> *@
 							}
 						</div>
 					</div>
 					<div class="col">
 						<div class="chat-item-content">
-							@if (@chat.Notification.SenderId != userId && !@chat.Notification.RecipientRead)
+							@* @if (@chat.Notification.SenderId != userId && !@chat.Notification.RecipientRead)
 							{
 								<p style="margin-bottom: 0" class="chat-card-text chat-notification-text">New messages</p>
 							}
 							else
 							{
 								<p style="margin-bottom: 0" class="chat-card-text">No new messages</p>
-							}
+							} *@
 						</div>
 					</div>
 				</div>

@@ -13,6 +13,8 @@ namespace Dissertation.Models
 
         public string? ImagePath { get; set; }
 
+        public string? ThumbnailPath { get; set; }
+
         [Required]
         public int ChatId { get; set; }
 
@@ -31,7 +33,6 @@ namespace Dissertation.Models
         [Required]
         public DateTime Timestamp { get; set; }
 
-        [Required]
-        public string IV { get; set; }
+        public string? IV { get; set; }
     }
 }

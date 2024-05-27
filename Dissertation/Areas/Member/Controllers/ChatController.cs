@@ -1,6 +1,7 @@
 ﻿using Dissertation.Areas.Member.Models;
 using Dissertation.Data;
 using Dissertation.Models;
+using Dissertation.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,57 +16,49 @@ namespace Dissertation.Areas.Member.Views
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IImageUploadService _imageUploadService;
+        private readonly string[] allowedExtensions = [".jpg", ".jpeg", ".png", ".webp"];
 
-        public ChatController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+
+        public ChatController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IImageUploadService imageUploadService)
         {
             _context = context;
             _userManager = userManager;
+            _imageUploadService = imageUploadService;
         }
 
-        public static (string, string) EncryptString(string plainMessage, string key)
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
-            using (var aes = Aes.Create())
+            var currentUserId = _userManager.GetUserId(User);
+            if (currentUserId == null)
             {
-                aes.Key = Convert.FromBase64String(key);
-                aes.GenerateIV();
-                var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
-
-                using (var ms = new MemoryStream())
-                {
-                    using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-                    {
-                        using (var sw = new StreamWriter(cs))
-                        {
-                            sw.Write(plainMessage);
-                        }
-                    }
-
-                    string cipherMessage = Convert.ToBase64String(ms.ToArray());
-                    string IV = Convert.ToBase64String(aes.IV);
-                    return (cipherMessage, IV);
-                }
+                return NotFound();
             }
-        }
-        
-        public static string DecryptString(string cipherMessage, string key, string IV)
-        {
-            using (var aes = Aes.Create())
-            {
-                aes.Key = Convert.FromBase64String(key);
-                aes.IV = Convert.FromBase64String(IV);
-                var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
 
-                using (var ms = new MemoryStream(Convert.FromBase64String(cipherMessage)))
-                {
-                    using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
-                    {
-                        using (var sr = new StreamReader(cs))
-                        {
-                            return sr.ReadToEnd();
-                        }
-                    }
-                }
-            }
+            var chats = await _context.Chats
+                .Where(m => m.UserOneId == currentUserId || m.UserTwoId == currentUserId)
+                .Include(m => m.UserOne)
+                .Include(m => m.UserTwo)
+                .ToListAsync();
+
+            var chatMessages = new List<ChatNotificationViewModel>();
+
+            foreach (var chat in chats)
+			{
+				var message = await _context.Messages
+					.Where(m => m.ChatId == chat.Id)
+					.OrderByDescending(m => m.Timestamp)
+					.FirstOrDefaultAsync();
+
+				ChatNotificationViewModel chatMessage = new ChatNotificationViewModel();
+				chatMessage.Chat = chat;
+				chatMessage.Notification = message;
+
+				chatMessages.Add(chatMessage);
+			}
+
+            return View(chatMessages);
         }
 
         public async Task<IActionResult> NewChat(int? id)
@@ -194,9 +187,9 @@ namespace Dissertation.Areas.Member.Views
             return View(chatUser);
         }
 
-        public async Task<IActionResult> SendMessage(int? id, string? messageContent)
+        public async Task<IActionResult> SendMessage(int? id, string? messageContent, IFormFile imageFile)
         {
-            if (id == null || messageContent == null || _context.Chats == null)
+            if (id == null || (messageContent == null && imageFile == null) || _context.Chats == null)
             {
                 return NotFound();
             }
@@ -224,20 +217,44 @@ namespace Dissertation.Areas.Member.Views
                 return NotFound();
             }
 
-            var (cipherMessage, IV) = EncryptString(messageContent, key);
-
             Message message = new Message();
+            if (imageFile != null)
+            {
+                string fileNameWithoutExt = Guid.NewGuid().ToString();
+                string fileExtension = Path.GetExtension(imageFile.FileName);
+                string fileName = fileNameWithoutExt + fileExtension;
+                string thumbnailName = fileNameWithoutExt + "_thumb.webp";
+                string imagePath = Path.Combine("wwwroot/images/user-uploads", fileName);
+                string thumbnailPath = Path.Combine("wwwroot/images/user-uploads", thumbnailName);
+
+                string? errorMessage = _imageUploadService.UploadImage(imageFile, imagePath, thumbnailPath).Result;
+                if (errorMessage != null)
+                {
+                    return NotFound();
+                }
+
+                message.ImagePath = "/images/user-uploads/" + fileName; // Cannot have wwwroot for it to work in HTML.
+                message.ThumbnailPath = "/images/user-uploads/" + thumbnailName;
+            }
+            
+            if (messageContent != null)
+            {
+                var (cipherMessage, IV) = EncryptString(messageContent, key);
+                message.MessageContent = cipherMessage;
+                message.IV = IV;
+            }
+
+            
             message.ChatId = chat.Id;
-            message.MessageContent = cipherMessage;
             message.SenderId = currentUserId;
             message.RecipientRead = false;
             message.Timestamp = DateTime.Now;
-            message.IV = IV;
+            
 
             _context.Add(message);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Json(new { imagePath = message.ImagePath, thumbnailPath = message.ThumbnailPath });
         }
 
         public async Task<IActionResult> LoadMessages(int? id, int messagesLoaded)
@@ -268,8 +285,9 @@ namespace Dissertation.Areas.Member.Views
             {
                 Id = m.Id,
                 ChatId = m.ChatId,
-                MessageContent = String.IsNullOrEmpty(m.MessageContent) ? "" : DecryptString(m.MessageContent, key, m.IV),
+                MessageContent = String.IsNullOrEmpty(m.MessageContent) ? null : DecryptString(m.MessageContent, key, m.IV),
                 ImagePath = m.ImagePath,
+                ThumbnailPath = m.ThumbnailPath,
                 Sender = m.Sender,
                 SenderId = m.SenderId,
                 Timestamp = m.Timestamp,
@@ -310,6 +328,52 @@ namespace Dissertation.Areas.Member.Views
             _context.UpdateRange(messages);
             await _context.SaveChangesAsync();
             return NoContent();
+        }
+
+        public static (string, string) EncryptString(string plainMessage, string key)
+        {
+            using (var aes = Aes.Create())
+            {
+                aes.Key = Convert.FromBase64String(key);
+                aes.GenerateIV();
+                var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+                using (var ms = new MemoryStream())
+                {
+                    using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (var sw = new StreamWriter(cs))
+                        {
+                            sw.Write(plainMessage);
+                        }
+                    }
+
+                    string cipherMessage = Convert.ToBase64String(ms.ToArray());
+                    string IV = Convert.ToBase64String(aes.IV);
+                    return (cipherMessage, IV);
+                }
+            }
+        }
+
+        public static string DecryptString(string cipherMessage, string key, string IV)
+        {
+            using (var aes = Aes.Create())
+            {
+                aes.Key = Convert.FromBase64String(key);
+                aes.IV = Convert.FromBase64String(IV);
+                var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+
+                using (var ms = new MemoryStream(Convert.FromBase64String(cipherMessage)))
+                {
+                    using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (var sr = new StreamReader(cs))
+                        {
+                            return sr.ReadToEnd();
+                        }
+                    }
+                }
+            }
         }
     }
 }

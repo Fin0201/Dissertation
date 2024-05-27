@@ -5,6 +5,7 @@ using Dissertation.Models;
 using Dissertation.Data;
 using Dissertation.Services;
 using System.Security.Claims;
+using Dissertation.Areas.Member.Models;
 
 namespace Dissertation.Areas.Member.Views
 {
@@ -31,26 +32,28 @@ namespace Dissertation.Areas.Member.Views
             /*return _context.Items != null ?
                         View(await _context.Items.ToListAsync()) :
                         Problem("Entity set 'ApplicationDbContext.Items' is null.");*/
-            IQueryable<Item>? items;
+
+
+            var items = _context.Items;
+            var itemList = await items.ToListAsync();
+
             if (lat.HasValue && lat.Value != 0 && lon.HasValue && lon.Value != 0)
             {
-                items = from i in _context.Items
-                            where _locationService.HaversineDistance(i.Latitude, i.Longitude, lat.GetValueOrDefault(), lon.GetValueOrDefault(), 10)
-                            select i;
-            }
-            else 
-            {
-                items = from i in _context.Items
-                            where _locationService.HaversineDistance(i.Latitude, i.Longitude, lat.GetValueOrDefault(), lon.GetValueOrDefault(), 10)
-                            select i;
+                itemList = itemList.Where(i => _locationService.WithinRadius(i.Latitude, i.Longitude, lat.GetValueOrDefault(), lon.GetValueOrDefault(), 10)).ToList();
             }
 
+            // Apply search filter if necessary
             if (!String.IsNullOrEmpty(searchString))
             {
-               items = items.Where(s => s.Name.Contains(searchString));
+                itemList = itemList.Where(s => s.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
-            return View(await items.ToListAsync());
+            /*if (!String.IsNullOrEmpty(searchString))
+            {
+               items = items.Where(s => s.Name.Contains(searchString));
+            }*/
+
+            return View(itemList);
         }
 
         // GET: Member/Item/Details/5
@@ -68,7 +71,14 @@ namespace Dissertation.Areas.Member.Views
                 return NotFound();
             }
 
-            return View(Item);
+            var itemViewModel = new ItemViewModel()
+            {
+                Item = Item,
+                Reviews = await _context.Reviews.Where(r => r.ItemId == Item.Id).ToListAsync(),
+                Requests = await _context.UserRequests.Where(r => r.ItemId == Item.Id).ToListAsync()
+            };
+
+            return View(itemViewModel);
         }
 
         // GET: Member/Item/Create
@@ -82,7 +92,7 @@ namespace Dissertation.Areas.Member.Views
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,MaxDays,TotalStock,Category")] Item item, string postcode, IFormFile imageFile)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,MaxDays,Category")] Item item, string postcode, IFormFile imageFile)
         {
             var currentUserId = _userManager.GetUserId(User);
             if (currentUserId == null)
@@ -117,10 +127,8 @@ namespace Dissertation.Areas.Member.Views
             }
 
             item.Price = Math.Round(item.Price, 2);
-            item.CurrentStock = item.TotalStock;
             item.LoanerId = currentUserId;
             item.Status = Enums.ItemStatus.Available;
-            item.AverageRating = 0;
             item.ImagePath = "/images/user-uploads/" + fileName; // Cannot have wwwroot for it to work in HTML.
             item.ThumbnailPath = "/images/user-uploads/" + thumbnailName;
             item.AddedOn = DateTime.Now;
@@ -163,7 +171,7 @@ namespace Dissertation.Areas.Member.Views
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,MaxDays,TotalStock,Category")] Item item, string postcode, IFormFile imageFile)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,MaxDays,Category")] Item item, string postcode, IFormFile imageFile)
         {
             if (id != item.Id)
             {
@@ -194,11 +202,9 @@ namespace Dissertation.Areas.Member.Views
                 return View(item);
             }
 
-            item.CurrentStock = existingItem.CurrentStock;
             item.AddedOn = existingItem.AddedOn;
             item.ModifiedOn = DateTime.Now;
             item.LoanerId = existingItem.LoanerId;
-            item.AverageRating = existingItem.AverageRating;
             item.Latitude = lat.GetValueOrDefault();
             item.Longitude = lon.GetValueOrDefault();
 

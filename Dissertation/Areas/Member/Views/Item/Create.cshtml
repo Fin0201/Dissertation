@@ -34,11 +34,6 @@
                 <span asp-validation-for="MaxDays" class="text-danger"></span>
             </div>
             <div class="form-group mt-2">
-                <label asp-for="TotalStock" class="control-label"></label>
-                <input asp-for="TotalStock" class="form-control" />
-                <span asp-validation-for="TotalStock" class="text-danger"></span>
-            </div>
-            <div class="form-group mt-2">
                 <label class="control-label">Postcode</label>
                 <input name="postcode" id="postcode" class="form-control" />
                 <span class="text-danger">@Html.ValidationMessage("Postcode")</span>
@@ -50,7 +45,7 @@
             </div>
             <div class="form-group mt-2">
                 <label class="control-label">Upload Image</label>
-                <input type="file" name="imageFile" class="form-control" />
+                <input type="file" accept=".jpg, .jpeg, .png, .webp" name="imageFile" class="form-control" />
                 <span class="text-danger">@Html.ValidationMessage("ImageFile")</span>
             </div>
             <div class="form-group">

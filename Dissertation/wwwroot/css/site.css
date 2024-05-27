@@ -38,59 +38,191 @@ body {
 
 
 .chat-bubble {
-    max-width: 60%; /* Maximum width of the bubble */
-    padding: 10px 20px; /* Padding around the text */
-    background-color: #f0f0f0; /* Background color of the bubble */
-    border-radius: 20px; /* Rounded corners for the bubble */
-    border: 1px solid #ccc; /* Optional: adds a border */
+    max-width: 60%;
+    padding: 10px 20px;
+    background-color: #f0f0f0;
+    border-radius: 20px;
+    border: 1px solid #ccc;
     margin: 10px;
-    word-wrap: break-word; /* Ensures the text wraps within the bubble */
-}
-
-.ster {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    min-height: 50vh;
-    display: flex;
-    align-items: center;
-    text-align: center;
-    justify-content: center;
-    background: hsl(137, 46%, 24%);
-    font-family: "Poppins", sans-serif;
+    word-wrap: break-word;
 }
 
 .star-rating {
-    max-width: 33rem;
-    background: #fff;
-    margin: 0 1rem;
-    padding: 1rem;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    width: 100%;
-    border-radius: 0.5rem;
+    font-size: 2rem;
+    color: #d3d3d3;
 }
 
 .star {
-    font-size: 10vh;
     cursor: pointer;
 }
 
-.one {
-    color: rgb(255, 0, 0);
+.star:hover,
+.star.hover,
+.star.selected {
+    color: #ffcc00;
 }
 
-.two {
-    color: rgb(255, 106, 0);
+.primary-message {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    display: inline-block;
+    background-color: #5040ff;
+    border-radius: 15px;
+    word-break: break-all;
+    white-space: normal;
+    hyphens: auto;
+    float: right;
 }
 
-.three {
-    color: rgb(251, 255, 120);
+.secondary-message {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    display: inline-block;
+    background-color: lightgray;
+    border-radius: 15px;
 }
 
-.four {
-    color: rgb(255, 255, 0);
+.primary-message-content {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: white;
+    text-align: left;
+    margin-bottom: 0;
 }
 
-.five {
-    color: rgb(24, 159, 14);
+.secondary-message-content {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: black;
+    text-align: left;
+    margin-bottom: 0;
+}
+
+.send-message-border {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-end-start-radius: 50px;
+    border-end-end-radius: 50px;
+    border-start-end-radius: 50px;
+    border-start-start-radius: 50px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.send-message-input {
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 5px;
+    padding-left: 12px;
+}
+
+.message-image-button {
+    background-color: transparent;
+    border: none;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.message-image-button-img {
+    width: 33px;
+    height: 33px;
+    opacity: 50%;
+    margin-right: 7px
+}
+
+.send-message-button {
+    background-color: transparent;
+    border: none;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.send-message-buttom-img {
+    width: 40px;
+    height: 40px;
+}
+
+.messages {
+    position: fixed;
+    width: 100%;
+    overflow-y: auto;
+}
+
+.message-content-thumbnail {
+    cursor: pointer;
+    margin-left: 12px;
+    margin-right: 12px;
+    margin-top: 12px;
+    border-radius: 15px;
+    max-height: 15rem;
+    max-width: 15rem;
+}
+
+.nav-icon {
+    width: 30px;
+    height: 30px;
+}
+
+.nav-li {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.chat-card-text {
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.chat-box {
+    border: 1px solid #ccc;
+    border-radius: 0.3rem;
+}
+
+.review-text-input {
+    border-radius: 5px;
+    width: 30vw;
+    height: 20vh;
+    text-align: left;
+    padding-bottom: 5px;
+    box-sizing: border-box;
+    font-size: 1rem;
+}
+
+.text-success {
+    color: #28a745;
+    text-align: center;
+}
+
+.item-details-container {
+    margin-left: 15vw;
+    display: flex;
+    align-items: center;
+}
+
+.item-details-container img {
+    max-width: 300px;
+    margin-right: 20px;
+}
+
+.item-details-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.reviews {
+    border-radius: 5px;
+    margin-left: 20px;
+    border: 1px solid #ccc;
 }

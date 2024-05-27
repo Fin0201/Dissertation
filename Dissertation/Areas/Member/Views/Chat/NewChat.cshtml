@@ -4,27 +4,31 @@
     ViewData["Title"] = "Message User";
 }
 
-<form asp-action="InitiateChat" method="post">
-    <div class="container">
-        <div class="row p-1">
-            <div class="col-1">Message</div>
-            <div class="col-5"><input type="text" class="w-100" id="messageInput" name="messageContent" /></div>
-        </div>
-        <div class="row p-1">
-            <div class="col-6 text-end">
-                <input type="hidden" name="id" value="@Model.Id" />
-                <input type="submit" id="sendButton" value="Send Message" />
-            </div>
-        </div>
-        <div class="row p-1">
-            <div class="col-6">
-                <hr />
-            </div>
-        </div>
-        <div class="row p-1">
-            <div class="col-6">
-                <ul id="messagesList"></ul>
+<div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+            <div class="card shadow-2-strong" style="border-radius: 1rem;">
+                <div class="card-body p-5 text-center">
+                    <form asp-action="InitiateChat" asp- method="post">
+                        <div class="mb-5">
+                            You haven't talked with this person yet.
+                            <br />
+                            Why not send them a message?
+                        </div>
+                        <div class="form-floating">
+                            <div>
+                                <input type="text" class="w-100 mb-3 text-center" id="messageInput" placeholder="Message..." name="messageContent" />
+                            </div>
+                        </div>
+                        <div class="form-floating">
+                            <div>
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                <input type="submit" id="sendButton" class="btn btn-success" value="Send Message" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</form>
+</div>

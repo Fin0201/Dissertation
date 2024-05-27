@@ -1,107 +1,132 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> signInManager
 @inject UserManager<IdentityUser> userManager
-@model Dissertation.Models.Item
+@model Dissertation.Areas.Member.Models.ItemViewModel
 
 @{
     ViewData["Title"] = "Item Details";
     string userId = "";
     bool isAdmin = false;
+    bool requestSubmitted = false;
+    bool reviewSubmitted = false;
 }
 
 @if (signInManager.IsSignedIn(User))
 {
     userId = userManager.GetUserId(User);
-    @if (await userManager.IsInRoleAsync(await userManager.GetUserAsync(User), "Admin"))
+    if (await userManager.IsInRoleAsync(await userManager.GetUserAsync(User), "Admin"))
     {
         isAdmin = true;
     }
 }
 
+@for (int i = 0; i < Model.Requests.Count(); i++)
+{
+	if (Model.Requests.ElementAt(i).RenterId == userId)
+	{
+		requestSubmitted = true;
+	}
+}
 
-<h1>Item Details</h1>
+@for (int i = 0; i < Model.Reviews.Count(); i++)
+{
+	if (Model.Reviews.ElementAt(i).UserId == userId)
+	{
+		reviewSubmitted = true;
+	}
+}
 
-<div>
-    <h4>Item</h4>
-    <hr />
 
-    @*Displays all details of the selectd Item*@
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MaxDays)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MaxDays)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.TotalStock)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.TotalStock)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Category)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Category)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.AddedOn)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.AddedOn)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ModifiedOn)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ModifiedOn)
-        </dd>
-        <dt class="col-sm-2">
-            Image
-        </dt>
-        <dd class="col-sm-10">
-            <img src="@Html.DisplayFor(model => model.ImagePath)" alt="Item image" style="width: 100px; height: auto;" />
-        </dd>
-    </dl>
+<h1 class="text-center">@Model.Item.Name</h1>
+
+<div class="item-details-container" style="margin-bottom: 10vh;">
+    <img src="@Html.DisplayFor(model => model.Item.ImagePath)" alt="Item image" style="width: 300px; height: auto;" />
+
+    <div class="item-details-content">
+        <p>@Html.DisplayFor(model => model.Item.Description)</p>
+        <p style="font-size: 2rem; font-weight: 500">£@Html.DisplayFor(model => model.Item.Price)</p>
+        <p style="font-size: 1.25rem">Category: @Html.DisplayFor(model => model.Item.Category)</p>
+        @if (userId != Model.Item.LoanerId)
+        {
+            <h2>Send the owner a message!</h2> 
+            <a asp-area="Member" asp-controller="Chat" asp-action="NewChat" asp-route-id="@Model.Item.Id" style="margin-bottom: 100px;" class="btn btn-primary">Message</a>
+
+            if (requestSubmitted)
+            {
+                <p>You have already requested this item</p>
+                <button id="calcelRequestBtn" class="btn btn-danger" style="width: 100%; margin-bottom: 50px">Cancel Request</button>
+            }
+            else
+            {
+                <h2>Want to request this item?</h2>
+                <div>
+                    <label for="datetime">Select date and time:</label>
+                    <input type="hidden" value="@Model.Item.Id" />
+                    <input type="datetime-local" id="requestDate" name="datetime"><br><br>
+
+                    <button id="requestSendButton" class="btn btn-success" style="width: 100%; margin-bottom: 50px" value="Submit">Submit Request</button>
+                </div>
+            }
+            @if (userId == Model.Item.LoanerId || isAdmin)
+            {
+                <a asp-action="Edit" asp-route-id="@Model?.Item.Id" class="btn btn-warning" style="width: 50%; margin-left: 25%;">Edit Item</a>
+            }
+        }
+    </div>
 </div>
-<div>
-    @if (userId != Model.LoanerId)
+
+@if (reviewSubmitted)
+{
+    <p>You have already reviewed this item</p>
+}
+else
+{
+    <div class="star-rating" id="reviewForm">
+        <span class="star" data-value="1">&#9733;</span>
+        <span class="star" data-value="2">&#9733;</span>
+        <span class="star" data-value="3">&#9733;</span>
+        <span class="star" data-value="4">&#9733;</span>
+        <span class="star" data-value="5">&#9733;</span>
+        <input type="hidden" name="rating" class="rating-value" id="ratingValue" value="0">
+        <br />
+        <textarea id="reviewText" class="review-text-input"></textarea>
+        <br />
+        <button type="submit" id="sendButton" class="btn btn-primary">Submit Review</button>
+    </div>
+}
+
+<div id="reviews" class="mt-5 reviews">
+    @foreach (var review in Model.Reviews)
     {
-        <a asp-area="Member" asp-controller="Chat" asp-route-id="@Model.Id" asp-action="NewChat">Message</a> <text>|</text>
-        <a asp-area="Member" asp-action="ItemRequest" asp-route-id="@Model.Id">Send a Request</a> <text>|</text>
+        <div class="review">
+            <div class="review-header">
+                <span class="reviewer-name">@review.User.UserName</span>
+                <span class="review-date">@review.Timestamp</span>
+            </div>
+            <div class="review-body">
+                <div class="review-rating">
+                    @for (int i = 0; i < review.Rating; i++)
+                    {
+                        <span class="star selected">&#9733;</span>
+                    }
+                    @for (int i = review.Rating; i < 5; i++)
+                    {
+                        <span class="star">&#9733;</span>
+                    }
+                </div>
+                <p class="review-text">@review.ReviewText</p>
+            </div>
+        </div>
+        <hr style="margin-botton: 0;" />
     }
-    @if (userId == Model.LoanerId || isAdmin)
-    {
-        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> <text>|</text>
-    }
-    <a asp-action="Index">Back to List</a>
 </div>
 
-<div class="ster">
-<div class="card star-rating">
-    <h1>JavaScript Star Rating</h1>
-    <br />
-    <span onclick="gfg(1)" class="star">★</span>
-    <span onclick="gfg(2)" class="star">★</span>
-    <span onclick="gfg(3)" class="star">★</span>
-    <span onclick="gfg(4)" class="star">★</span>
-    <span onclick="gfg(5)" class="star">★</span>
-    <h3 id="output">Rating is: 0/5</h3>
-</div>
-</div>
+@section Scripts {
+    <script>
+        var itemId = @Model.Item.Id;
 
-<script src="~/js/star-rating.js"></script>
-
+    </script>
+    <script src="~/js/jquery-3.7.1.min.js"></script>
+	<script src="~/js/review.js"></script>
+    <script src="~/js/request.js"></script>
+}

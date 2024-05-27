@@ -22,5 +22,7 @@ namespace Dissertation.Models
         public IdentityUser? Renter { get; set; }
 
         public DateTime RequestDate { get; set; }
+
+        public bool Accepted { get; set; }
     }
 }

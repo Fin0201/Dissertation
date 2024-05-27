@@ -22,6 +22,12 @@ namespace Dissertation.Models
         [ForeignKey("UserId")]
         public IdentityUser? User { get; set; }
 
+        [Required]
+        public int? ItemId { get; set; }
+
+        [ForeignKey("ItemId")]
+        public Item? Item { get; set; }
+
         public DateTime Timestamp { get; set; }
     }
 }

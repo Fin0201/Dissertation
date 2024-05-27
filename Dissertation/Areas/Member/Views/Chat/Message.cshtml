@@ -5,33 +5,30 @@
     ViewData["Title"] = "Item Details";
 }
 
-<div class="container">
+<div class="container messages" id="chat-messages">
     <div class="row p-1">
-        <div class="col-1">Message</div>
-        <div class="col-5"><input type="text" class="w-100" id="messageInput" /></div>
+        <div id="messagesList" class="mt-3"></div>
     </div>
-    <div class="row p-1">
-        <div class="col-6 text-end">
-            <input type="submit" id="sendButton" value="Send Message" />
-        </div>
-    </div>
-    <div class="row p-1">
-        <div class="col-6">
-            <hr />
-        </div>
-    </div>
-    <div class="row p-1">
-        <div class="col-6">
-            <input type="submit" id="loadPrevious" onclick="loadMessages()" value="Load more messages" />
-            <ul id="messagesList"></ul>
-        </div>
+    <div class="message-input mt-3 send-message-border" style="">
+        <input class="form-control send-message-input" id="messageInput" placeholder="Message..." />
+        <button class="message-image-button" id="messageImageButton" onclick="inputImageWindow()">
+			<img src="~/images/site-content/icons8-image-96.png" class="message-image-button-img" alt="Send image" />
+        </button>
+        <input type="file" hidden accept=".jpg, .jpeg, .png, .webp" id="imageInput" class="image-input" />
+        <button class="send-message-button" id="sendButton" type="submit">
+            <img src="~/images/site-content/icons8-send-message-96.png" class="send-message-buttom-img" alt="Send message" />
+        </button>
     </div>
 </div>
-<script>
-    var chatId = @Model.Chat.Id;
-    var user = '@Model.User.UserName';
-</script>
-<script src="~/js/jquery-3.7.1.min.js"></script>
-<script src="~/js/signalr/dist/browser/signalr.js"></script>
-<script src="~/js/load-messages.js"></script>
-<script src="~/js/chat.js"></script>
+
+@section Scripts {
+	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        var chatId = @Model.Chat.Id;
+        var currentUserName = '@Model.User.UserName';
+    </script>
+    <script src="~/js/jquery-3.7.1.min.js"></script>
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/load-messages.js"></script>
+    <script src="~/js/chat.js"></script>
+}

@@ -21,14 +21,8 @@ namespace Dissertation.Models
         public decimal Price { get; set; }
 
         [Required]
+        [Display(Name = "Max Loan Days")]
         public int MaxDays { get; set; }
-
-        [Required]
-        public int TotalStock { get; set; }
-
-        public int CurrentStock { get; set; }
-
-        public int AverageRating { get; set; }
 
         public string? ImagePath { get; set; } // Not storing the full path because HTML and C# require slightly different paths to access the same file.
 
@@ -40,6 +34,7 @@ namespace Dissertation.Models
         public ItemCategory Category { get; set; }
 
         public double Latitude { get; set; }
+
         public double Longitude { get; set; }
 
         public string? LoanerId { get; set; }
