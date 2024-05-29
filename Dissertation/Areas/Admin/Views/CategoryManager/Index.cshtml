@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Dissertation.Models.Category>
+
+
+@{
+    ViewData["Title"] = "Category Manager Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Category Manager</h1>
+
+    @if (ViewBag.Message != null)
+    {
+        <div class="alert alert-danger mx-2">@ViewBag.Message</div>
+    }
+
+    <form method="post" asp-action="AddCategory" asp-controller="CategoryManager">
+        <div class="input-group">
+            <input name="CategoryName" class="form-control w-25" />
+            <span class="input-group-btn">
+                <button type="submit" class="btn-info btn">Add New Category</button>
+            </span>
+        </div>
+    </form>
+
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Category Name</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var Category in Model)
+            {
+                <tr>
+                    <td>@Category.Id</td>
+                    <td>@Category.Name</td>
+                    <td>
+                        <a class="btn btn-danger" asp-action="DeleteCategory" asp-route-id="@Category.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

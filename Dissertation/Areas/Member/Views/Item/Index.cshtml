@@ -12,10 +12,7 @@
 @if (signInManager.IsSignedIn(User))
 {
     userId = userManager.GetUserId(User);
-    @if (await userManager.IsInRoleAsync(await userManager.GetUserAsync(User), "Admin"))
-    {
-        isAdmin = true;
-    }
+    isAdmin = await userManager.IsInRoleAsync(await userManager.GetUserAsync(User), "Admin");
 }
 
 <h1>Manage Item</h1>
@@ -25,38 +22,77 @@
 </p>
 
 
-@*Implements the search bar*@
-<form asp-action="Index" method="get">
-    <div class="input-group mb-3">
-        <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="searchString">
-        <button class="btn btn-info" type="submit">Search</button>
-    </div>
-</form>
+<div class="row">
+    <section>
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                    <div class="card shadow-2-strong" style="border-radius: 1rem;">
+                        <div class="card-body p-5 text-center">
+                            <form asp-action="Index" method="get">
+                                <div class="mb-3">
+                                    <label>Search for an item</label>
+                                    <input class="form-control text-center" type="search" placeholder="Search" aria-label="Search" name="searchString" />
+                                    <label class="mt-1">Enter a postcode to show relevant items</label>
+                                    <input class="form-control text-center" placeholder="Postcode" id="postcode" name="postcode" />
+                                    <label class="mt-1">Enter a radius to search within</label>
+                                    <input class="form-control mt-2 w-50 text-center" style="margin-left: 25%" type="number" placeholder="Radius to search" id="radius" name="radius" />
+                                    <button class="btn btn-info mt-3" type="submit">Search</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
 
 @*Displays all classes*@
 <div class="d-flex flex-wrap justify-content-between">
     @foreach (var item in Model) // Loops through each item and then displays each item in seperate cards
     {
-        <div class="card mb-4">
+        <div class="card mb-4 col-2" style="margin-left: 10px; margin-right: 10px;">
             <div class="card-body">
-                <img src="@Html.DisplayFor(modelItem => item.ThumbnailPath)" alt="Item image" style="width: 100px; height: auto;" />
+                <a asp-action="Details" asp-route-id="@item.Id">
+                    <img src="@Html.DisplayFor(modelItem => item.ThumbnailPath)" alt="Item image" style="display: block; margin-left: auto; margin-right: auto; width: 60%; height: auto;" />
+                </a>
                 <h5 class="card-title text-center mb-3">@Html.DisplayFor(modelItem => item.Name)</h5>
                 <p class="card-text">
                     <strong>Time and Date:</strong> @Html.DisplayFor(modelItem => item.Category) <br />
                     <strong>Instructor:</strong> @Html.DisplayFor(modelItem => item.Price) <br />
                 </p>
                 <div class="d-flex justify-content-between">
-                    @if (userId == item.LoanerId || isAdmin)
-                    {
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
-                    }
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
-                    @if (userId == item.LoanerId || isAdmin)
-                    {
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
-                    }
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-success w-100 mt-1">Details</a>
                 </div>
+
+                @if (userId == item.LoanerId || isAdmin)
+                {
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning w-100 mt-1">Edit</a>
+                    </div>
+                }
+                
+                @if (userId == item.LoanerId || isAdmin)
+                {
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger w-100 mt-1">Delete</a>
+                    </div>
+                }
             </div>
         </div>
     }
 </div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/js/geolocation.js"></script>
+    <script>
+        getLocation().then(postalCode => {
+            document.getElementById('postcode').value = postalCode;
+        })
+    </script>
+}

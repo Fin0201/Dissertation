@@ -39,48 +39,70 @@
 
 <h1 class="text-center">@Model.Item.Name</h1>
 
-<div class="item-details-container" style="margin-bottom: 10vh;">
-    <img src="@Html.DisplayFor(model => model.Item.ImagePath)" alt="Item image" style="width: 300px; height: auto;" />
+<div class="item-details-container">
+    <img src="@Html.DisplayFor(model => model.Item.ImagePath)" alt="Item image" style="width: 300px; height: auto; margin-top: 0; margin-bottom: auto;" />
 
     <div class="item-details-content">
         <p>@Html.DisplayFor(model => model.Item.Description)</p>
         <p style="font-size: 2rem; font-weight: 500">£@Html.DisplayFor(model => model.Item.Price)</p>
-        <p style="font-size: 1.25rem">Category: @Html.DisplayFor(model => model.Item.Category)</p>
-        @if (userId != Model.Item.LoanerId)
+        <p style="font-size: 1.25rem">Category: @Html.DisplayFor(model => model.Item.Category.Name)</p>
+
+        @if (userId == Model.Item.LoanerId || isAdmin)
         {
-            <h2>Send the owner a message!</h2> 
-            <a asp-area="Member" asp-controller="Chat" asp-action="NewChat" asp-route-id="@Model.Item.Id" style="margin-bottom: 100px;" class="btn btn-primary">Message</a>
-
-            if (requestSubmitted)
-            {
-                <p>You have already requested this item</p>
-                <button id="calcelRequestBtn" class="btn btn-danger" style="width: 100%; margin-bottom: 50px">Cancel Request</button>
-            }
-            else
-            {
-                <h2>Want to request this item?</h2>
-                <div>
-                    <label for="datetime">Select date and time:</label>
-                    <input type="hidden" value="@Model.Item.Id" />
-                    <input type="datetime-local" id="requestDate" name="datetime"><br><br>
-
-                    <button id="requestSendButton" class="btn btn-success" style="width: 100%; margin-bottom: 50px" value="Submit">Submit Request</button>
-                </div>
-            }
-            @if (userId == Model.Item.LoanerId || isAdmin)
-            {
-                <a asp-action="Edit" asp-route-id="@Model?.Item.Id" class="btn btn-warning" style="width: 50%; margin-left: 25%;">Edit Item</a>
-            }
+            <a asp-action="Edit" asp-route-id="@Model?.Item.Id" class="btn btn-warning" style="width: 50%; margin-left: 25%;">Edit Item</a>
         }
     </div>
 </div>
 
+<div class="row" style="margin-bottom: 5vh;">
+    <section>
+        <div class="container h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                    <div class="card-body p-5 text-center">
+                        @if (userId != Model.Item.LoanerId)
+                        {
+                            <h4>Send the owner a message!</h4>
+                            <a asp-area="Member" asp-controller="Chat" asp-action="NewChat" asp-route-id="@Model.Item.Id" style="margin-bottom: 100px;" class="btn btn-primary">Message</a>
+
+                            if (requestSubmitted)
+                            {
+                                <p>You have already requested this item</p>
+                                <button id="calcelRequestBtn" class="btn btn-danger" style="width: 100%; margin-bottom: 50px">Cancel Request</button>
+                            }
+                            else
+                            {
+                                <h4>Want to request this item?</h4>
+                                <div class="form-group mt-2">
+                                    <label>Select date and time:</label>
+                                </div>
+                                <div class="form-group mt-2">
+                                    <label for="requestStart">Start Date:</label>
+                                    <input type="date" id="requestStart" />
+                                </div>
+                                <div class="form-group mt-2">
+                                    <label for="requestEnd">End Date:</label>
+                                    <input type="date" id="requestEnd" /><br><br>
+                                </div>
+                                <div class="form-group mt-2">
+                                    <button id="requestSendButton" class="btn btn-success" style="width: 100%; margin-bottom: 50px" value="Submit">Submit Request</button>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
 @if (reviewSubmitted)
 {
-    <p>You have already reviewed this item</p>
+    <h2>You have already reviewed this item</h2>
 }
 else
 {
+    <h2>Leave a review</h2>
     <div class="star-rating" id="reviewForm">
         <span class="star" data-value="1">&#9733;</span>
         <span class="star" data-value="2">&#9733;</span>
@@ -123,8 +145,8 @@ else
 
 @section Scripts {
     <script>
-        var itemId = @Model.Item.Id;
-
+        const itemId = @Model.Item.Id;
+        const itemMaxDays = @Model.Item.MaxDays; 
     </script>
     <script src="~/js/jquery-3.7.1.min.js"></script>
 	<script src="~/js/review.js"></script>

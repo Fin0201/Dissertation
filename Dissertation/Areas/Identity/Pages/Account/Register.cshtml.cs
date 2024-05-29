@@ -73,7 +73,7 @@ namespace Dissertation.Areas.Identity.Pages.Account
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
             [DataType(DataType.Text)]
-            [Display(Name = "UserName")]
+            [Display(Name = "Username")]
             public string UserName { get; set; }
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used

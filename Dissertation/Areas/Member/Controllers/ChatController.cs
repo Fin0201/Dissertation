@@ -16,11 +16,11 @@ namespace Dissertation.Areas.Member.Views
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly IImageUploadService _imageUploadService;
+        private readonly ImageUploadService _imageUploadService;
         private readonly string[] allowedExtensions = [".jpg", ".jpeg", ".png", ".webp"];
 
 
-        public ChatController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IImageUploadService imageUploadService)
+        public ChatController(ApplicationDbContext context, UserManager<IdentityUser> userManager, ImageUploadService imageUploadService)
         {
             _context = context;
             _userManager = userManager;

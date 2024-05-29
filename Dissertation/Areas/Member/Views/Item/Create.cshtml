@@ -4,68 +4,103 @@
     ViewData["Title"] = "Add Item";
 }
 
-<h1>Add Item</h1>
-
-<h4>Item</h4>
+<h1 class="text-center">Add Item</h1>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        @*Creates a form prompting the use to enter all required information from the model*@
-        <form asp-action="Create" method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group mt-2">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group mt-2">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group mt-2">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" type="number" step="0.01" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group mt-2">
-                <label asp-for="MaxDays" class="control-label"></label>
-                <input asp-for="MaxDays" class="form-control" />
-                <span asp-validation-for="MaxDays" class="text-danger"></span>
-            </div>
-            <div class="form-group mt-2">
-                <label class="control-label">Postcode</label>
-                <input name="postcode" id="postcode" class="form-control" />
-                <span class="text-danger">@Html.ValidationMessage("Postcode")</span>
-            </div>
-            <div class="form-group mt-2">
-                <label asp-for="Category" class="control-label"></label>
-                <select asp-for="Category" class="form-control form-select" asp-items="Html.GetEnumSelectList<Dissertation.Models.Enums.ItemCategory>()"></select>
-                <span asp-validation-for="Category" class="text-danger"></span>
-            </div>
-            <div class="form-group mt-2">
-                <label class="control-label">Upload Image</label>
-                <input type="file" accept=".jpg, .jpeg, .png, .webp" name="imageFile" class="form-control" />
-                <span class="text-danger">@Html.ValidationMessage("ImageFile")</span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+
+<div class="row">
+    <section>
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                    <div class="card shadow-2-strong" style="border-radius: 1rem;">
+                        <div class="card-body p-5 text-center">
+                            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                                <h2>Add a new item</h2>
+                                <hr />
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <div class="form-group mt-2">
+                                    <label asp-for="Name" class="control-label"></label>
+                                    <input asp-for="Name" class="form-control" />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                                <div class="form-group mt-2">
+                                    <label asp-for="Description" class="control-label"></label>
+                                    <input asp-for="Description" class="form-control" />
+                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                </div>
+                                <div class="form-group mt-2">
+                                    <label asp-for="Price" class="control-label"></label>
+                                    <input asp-for="Price" class="form-control" type="number" step="0.01" />
+                                    <span asp-validation-for="Price" class="text-danger"></span>
+                                </div>
+                                <div class="form-group mt-2">
+                                    <label asp-for="MaxDays" class="control-label"></label>
+                                    <input asp-for="MaxDays" class="form-control" />
+                                    <span asp-validation-for="MaxDays" class="text-danger"></span>
+                                </div>
+                                <div class="form-group mt-2">
+                                    <label class="control-label">Postcode</label>
+                                    <input name="postcode" id="postcode" class="form-control" />
+                                    <span class="text-danger">@Html.ValidationMessage("Postcode")</span>
+                                </div>
+                                <div class="form-group mt-2">
+                                    <label class="control-label"></label>
+                                    <select class="form-control form-select" name="categoryOption" id="categoryOption">
+                                        <option value="">Select a category</option>
+                                        
+                                    </select>
+                                    <span class="text-danger"@Html.ValidationMessage("Category")</span>
+                                </div>
+                                <div class="form-group mt-2">
+                                    <label class="control-label">Upload Image</label>
+                                    <input type="file" accept=".jpg, .jpeg, .png, .webp" name="imageFile" class="form-control" />
+                                    <span class="text-danger">@Html.ValidationMessage("ImageFile")</span>
+                                </div>
+                                <div class="form-group mt-3">
+                                    <input type="submit" value="Create" class="btn btn-primary w-100 mt-3" />
+                                    <a asp-action="Index" class="btn btn-danger mt-3 w-75">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="~/js/geolocation.js"></script>
+    <script src="~/js/jquery-3.7.1.min.js"></script>
     <script>
         getLocation().then(postalCode => {
-            console.log(`Postal Code: ${postalCode}`);
             document.getElementById('postcode').value = postalCode;
         })
+
+        const categoryOption = document.getElementById('categoryOption');
+
+        $.ajax({
+            type: "GET",
+            url: "/Member/Item/GetItemCategories",
+            success: function (categories) {
+                console.log(categories)
+                const optionOne = categories.shift();
+                categories.forEach(category => {
+					const option = document.createElement('option');
+					option.value = category.id;
+					option.innerText = category.name;
+					categoryOption.appendChild(option);
+				});
+                const option = document.createElement('option');
+                option.value = optionOne.id;
+                option.innerText = optionOne.name;
+                categoryOption.appendChild(option);
+            },
+            error: function () {
+                alert("Error loading categories.");
+            }
+        });
     </script>
 }

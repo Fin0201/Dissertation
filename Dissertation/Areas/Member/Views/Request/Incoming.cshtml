@@ -1,0 +1,43 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Dissertation.Areas.Member.Models
+@inject SignInManager<IdentityUser> signInManager
+@inject UserManager<IdentityUser> userManager
+@model IEnumerable<Request>
+
+@{
+    ViewData["Title"] = "Requests";
+	string userId = "";
+}
+
+@if (signInManager.IsSignedIn(User))
+{
+	userId = userManager.GetUserId(User);
+}
+
+<h1>Requests</h1>
+
+<div class="container">
+	@foreach (var request in Model)
+	{
+		<div class="row">
+			<div class="chat-box">
+				<div class="col">
+					<div class="chat-item-content">
+						<a asp-area="Member" asp-controller="Item" asp-action="Details" asp-route-id="@request.Item.Id">a>
+							<img src="@Html.DisplayFor(modelItem => request.Item.ThumbnailPath)" alt="Item image" style="display: block; margin-left: auto; margin-right: auto; width: 60%; height: auto;" />
+						</a>
+
+						<p style="margin-bottom: 0" class="chat-card-text">Item: @request.Item.Name</p>
+						<p style="margin-bottom: 0" class="chat-card-text">Chat with: @request.Renter.UserName</p>
+					</div>
+				</div>
+				<div class="col">
+					<div class="chat-item-content">
+						<a class="btn btn-success" asp-action="AcceptRequest">Accept</a>
+						<a class="btn btn-danger" asp-action="RejectRequest">Reject</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+</div>

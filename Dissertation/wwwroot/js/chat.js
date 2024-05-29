@@ -112,7 +112,28 @@ document.getElementById("sendButton").addEventListener("click", function (event)
     event.preventDefault();
 });
 
-
-function inputImageWindow() {
+document.getElementById("messageImageButton").addEventListener("click", function (event) {
     document.getElementById("imageInput").click();
-}
+});
+
+document.getElementById("messageImageClearButton").addEventListener("click", function (event) {
+    document.getElementById("imageInput").value = '';
+
+    // This does not activate in the event lister
+    document.getElementById("messageImageButton").className = 'message-image-button';
+    document.getElementById("messageImageClearButton").className = 'message-image-button hidden';
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const fileInput = document.getElementById('imageInput');
+    const addImageBtn = document.getElementById('messageImageButton');
+    const removeImageBtn = document.getElementById('messageImageClearButton');
+
+    fileInput.addEventListener('change', () => {
+        console.log("here")
+        if (fileInput.files.length > 0) {
+            addImageBtn.className = 'message-image-button hidden';
+            removeImageBtn.className = 'message-image-button';
+        }
+    });
+});

@@ -11,7 +11,6 @@ async function getLocation() {
             // Success callback
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
-            console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
 
             await toPostalCode(latitude, longitude);
         }, function (error) {

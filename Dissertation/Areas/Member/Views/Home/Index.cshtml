@@ -1,8 +1,62 @@
-﻿@{
-    ViewData["Title"] = "Member Home Page";
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> signInManager
+@inject UserManager<IdentityUser> userManager
+@model IEnumerable<Dissertation.Models.Item>
+
+@{
+    ViewData["Title"] = "Welcome";
+    string userId = "";
+    bool isAdmin = false;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome Member</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@if (signInManager.IsSignedIn(User))
+{
+    userId = userManager.GetUserId(User);
+    @if (await userManager.IsInRoleAsync(await userManager.GetUserAsync(User), "Admin"))
+    {
+        isAdmin = true;
+    }
+}
+
+<h1>CHoose an Item!</h1>
+
+<p>
+    <a asp-action="Create" asp- class="btn btn-success">Create New Item</a>
+</p>
+
+
+@*Implements the search bar*@
+<form asp-action="Index" method="get">
+    <div class="input-group mb-3">
+        <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="searchString">
+        <button class="btn btn-info" type="submit">Search</button>
+    </div>
+</form>
+
+@*Displays all classes*@
+<div class="d-flex flex-wrap justify-content-between">
+    @foreach (var item in Model) // Loops through each item and then displays each item in seperate cards
+    {
+        <div class="card mb-4">
+            <div class="card-body">
+                <img src="@Html.DisplayFor(modelItem => item.ThumbnailPath)" alt="Item image" style="width: 100px; height: auto;" />
+                <h5 class="card-title text-center mb-3">@Html.DisplayFor(modelItem => item.Name)</h5>
+                <p class="card-text">
+                    <strong>Time and Date:</strong> @Html.DisplayFor(modelItem => item.Category) <br />
+                    <strong>Instructor:</strong> @Html.DisplayFor(modelItem => item.Price) <br />
+                </p>
+                <div class="d-flex justify-content-between">
+                    @if (userId == item.LoanerId || isAdmin)
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
+                    }
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
+                    @if (userId == item.LoanerId || isAdmin)
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
 </div>

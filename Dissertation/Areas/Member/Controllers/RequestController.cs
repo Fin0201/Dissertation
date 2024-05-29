@@ -1,27 +1,27 @@
-﻿using Dissertation.Areas.Member.Models;
-using Dissertation.Data;
+﻿using Dissertation.Data;
 using Dissertation.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static Dissertation.Models.Enums;
 
 namespace Dissertation.Areas.Member.Views
 {
     [Area("Member")]
     [Authorize(Roles = "Member")]
-    public class UserRequestController : Controller
+    public class RequestController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public UserRequestController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public RequestController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Incoming()
         {
             var currentUserId = _userManager.GetUserId(User);
             if (currentUserId == null)
@@ -29,14 +29,33 @@ namespace Dissertation.Areas.Member.Views
                 return NotFound();
             }
 
-            var userRequests = await _context.UserRequests
+            await UpdateRequests();
+
+            var requests = await _context.Requests
                 .Include(u => u.Item)
                 .Where(u => u.RenterId == currentUserId)
                 .ToListAsync();
-            return View(userRequests);
+            return View(requests);
         }
 
-        public async Task<IActionResult> SendRequest(int? id, DateTime requestTime)
+        public async Task<IActionResult> Outgoing()
+        {
+            var currentUserId = _userManager.GetUserId(User);
+            if (currentUserId == null)
+            {
+                return NotFound();
+            }
+
+            await UpdateRequests();
+
+            var requests = await _context.Requests
+                .Include(u => u.Item)
+                .Where(u => u.Item.LoanerId == currentUserId)
+                .ToListAsync();
+            return View(requests);
+        }
+
+        public async Task<IActionResult> SendRequest(int? id, DateTime requestStart, DateTime RequestEnd)
         {
             if (id == null || _context.Items == null)
             {
@@ -56,22 +75,25 @@ namespace Dissertation.Areas.Member.Views
                 return NotFound();
             }
 
-            var existingRequest = await _context.UserRequests
+            var existingRequest = await _context.Requests
                 .FirstOrDefaultAsync(m => m.ItemId == item.Id && m.RenterId == currentUserId);
             if (existingRequest != null)
             {
                 return RedirectToAction("Index", "Items");
             }
 
-            var userRequest = new UserRequest
+            var request = new Request
             {
                 ItemId = item.Id,
                 RenterId = currentUserId,
-                RequestDate = requestTime,
-                Accepted = false
+                RequestDate = DateTime.Now,
+                RequestStart = requestStart,
+                RequestEnd = RequestEnd,
+                Status = RequestStatus.Pending
+
             };
 
-            _context.Add(userRequest);
+            _context.Add(request);
             await _context.SaveChangesAsync();
             return NoContent();
         }
@@ -96,14 +118,14 @@ namespace Dissertation.Areas.Member.Views
                 return NotFound();
             }
 
-            var existingRequest = await _context.UserRequests
+            var existingRequest = await _context.Requests
                 .FirstOrDefaultAsync(m => m.ItemId == item.Id && m.RenterId == currentUserId);
             if (existingRequest == null)
             {
                 return NotFound();
             }
 
-            if (existingRequest.Accepted)
+            if (existingRequest.Status == RequestStatus.Accepted)
             {
                 return NotFound();
             }
@@ -115,7 +137,7 @@ namespace Dissertation.Areas.Member.Views
 
         public async Task<IActionResult> AcceptRequest(int? id)
         {
-            if (id == null || _context.UserRequests == null)
+            if (id == null || _context.Requests == null)
             {
                 return NotFound();
             }
@@ -126,7 +148,7 @@ namespace Dissertation.Areas.Member.Views
                 return NotFound();
             }
 
-            var request = await _context.UserRequests
+            var request = await _context.Requests
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (request == null)
             {
@@ -145,10 +167,73 @@ namespace Dissertation.Areas.Member.Views
                 return NotFound();
             }
 
-            request.Accepted = true;
+            request.Status = RequestStatus.Accepted;
+            request.AcceptedDate = DateTime.Now;
             _context.Update(request);
             await _context.SaveChangesAsync();
             return NoContent();
+        }
+
+        public async Task<IActionResult> RejectRequest(int? id)
+        {
+            if (id == null || _context.Requests == null)
+            {
+                return NotFound();
+            }
+
+            var currentUserId = _userManager.GetUserId(User);
+            if (currentUserId == null)
+            {
+                return NotFound();
+            }
+
+            var request = await _context.Requests
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (request == null)
+            {
+                return NotFound();
+            }
+
+            var item = await _context.Items
+                .FirstOrDefaultAsync(m => m.Id == request.ItemId);
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            if (item.LoanerId != currentUserId)
+            {
+                return NotFound();
+            }
+
+            request.Status = RequestStatus.Rejected;
+            request.AcceptedDate = DateTime.Now;
+            _context.Update(request);
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
+        public async Task UpdateRequests()
+        {
+            var now = DateTime.Now;
+
+            var requests = await _context.Requests
+                .Where(r => r.Status == RequestStatus.Accepted || r.Status == RequestStatus.Pending)
+                .ToListAsync();
+
+            foreach (var request in requests)
+            {
+                if (request.Status == RequestStatus.Pending && request.RequestStart < now)
+                {
+                    request.Status = RequestStatus.NoResponse;
+                }
+                else if (request.Status == RequestStatus.Accepted && request.RequestEnd <= now)
+                {
+                    request.Status = RequestStatus.Completed;
+                }
+            }
+
+            await _context.SaveChangesAsync();
         }
     }
 }

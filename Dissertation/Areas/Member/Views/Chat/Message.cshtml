@@ -11,9 +11,12 @@
     </div>
     <div class="message-input mt-3 send-message-border" style="">
         <input class="form-control send-message-input" id="messageInput" placeholder="Message..." />
-        <button class="message-image-button" id="messageImageButton" onclick="inputImageWindow()">
+        <button class="message-image-button" id="messageImageButton">
 			<img src="~/images/site-content/icons8-image-96.png" class="message-image-button-img" alt="Send image" />
         </button>
+        <button class="message-image-button hidden" id="messageImageClearButton">
+            <img src="~/images/site-content/icons8-delete-96-red.png" class="message-image-button-img" alt="Clear image" />
+        </button> 
         <input type="file" hidden accept=".jpg, .jpeg, .png, .webp" id="imageInput" class="image-input" />
         <button class="send-message-button" id="sendButton" type="submit">
             <img src="~/images/site-content/icons8-send-message-96.png" class="send-message-buttom-img" alt="Send message" />

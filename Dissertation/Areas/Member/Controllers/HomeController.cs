@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dissertation.Areas.Member.Controllers
@@ -9,7 +10,7 @@ namespace Dissertation.Areas.Member.Controllers
         [Authorize(Roles = "Member")]
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "Item", new { area = "Member" });
         }
     }
 }

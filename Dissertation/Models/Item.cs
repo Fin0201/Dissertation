@@ -30,8 +30,10 @@ namespace Dissertation.Models
 
         public ItemStatus Status { get; set; }
 
-        [Required]
-        public ItemCategory Category { get; set; }
+        public int CategoryId { get; set; }
+
+        [ForeignKey("CategoryId")]
+        public Category? Category { get; set; }
 
         public double Latitude { get; set; }
 

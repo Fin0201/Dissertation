@@ -13,11 +13,11 @@ namespace Dissertation.Data
         string MemberId = Guid.NewGuid().ToString();
 
         public DbSet<Item> Items { get; set; }
-        public DbSet<Rent> Rents { get; set; }
         public DbSet<Chat> Chats { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Review> Reviews { get; set; }
-        public DbSet<UserRequest> UserRequests { get; set; }
+        public DbSet<Request> Requests { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -28,6 +28,7 @@ namespace Dissertation.Data
         {
             base.OnModelCreating(builder);
             SeedRoles(builder);
+            SeedItemCategories(builder);
             SeedAdmin(builder);
             SeedMember(builder);
             SeedUserRoles(builder);
@@ -52,6 +53,41 @@ namespace Dissertation.Data
                     Name = "Member",
                     NormalizedName = "Member".ToUpper(),
                     ConcurrencyStamp = Guid.NewGuid().ToString()
+                }
+            );
+        }
+
+        private void SeedItemCategories(ModelBuilder builder)
+        {
+            builder.Entity<Category>().HasData(
+                new Category()
+                {
+                    Id = 1,
+                    Name = "Other"
+                }
+            );
+
+            builder.Entity<Category>().HasData(
+                new Category()
+                {
+                    Id = 2,
+                    Name = "Drone"
+                }
+            );
+
+            builder.Entity<Category>().HasData(
+                new Category()
+                {
+                    Id = 3,
+                    Name = "Camera"
+                }
+            );
+
+            builder.Entity<Category>().HasData(
+                new Category()
+                {
+                    Id = 4,
+                    Name = "Tablet"
                 }
             );
         }

@@ -97,9 +97,8 @@ namespace Dissertation.Services
 
         public bool WithinRadius(double lat1, double lon1, double lat2, double lon2, int distance)
         {
-            var earthRadiusMiles = 3958.8;
             double dLat = (lat2 - lat1) * (Math.PI / 180);
-            double dLon = (lat2 - lat1) * (Math.PI / 180);
+            double dLon = (lon2 - lon1) * (Math.PI / 180);
 
             double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
                        Math.Cos(lat1 * (Math.PI / 180)) * Math.Cos(lat2 * (Math.PI / 180)) *

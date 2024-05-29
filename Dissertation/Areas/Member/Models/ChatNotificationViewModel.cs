@@ -6,6 +6,6 @@ namespace Dissertation.Areas.Member.Models
     public class ChatNotificationViewModel
     {
         public Chat Chat { get; set; }
-        public Message Notification { get; set; }
+        public Message? Notification { get; set; }
     }
 }

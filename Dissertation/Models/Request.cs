@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static Dissertation.Models.Enums;
 
 namespace Dissertation.Models
 {
-    public class UserRequest
+    public class Request
     {
         [Key]
         public int Id { get; set; }
@@ -21,8 +22,14 @@ namespace Dissertation.Models
         [ForeignKey("RenterId")]
         public IdentityUser? Renter { get; set; }
 
+        public DateTime RequestStart { get; set; }
+
+        public DateTime RequestEnd { get; set; }
+
+        public RequestStatus Status { get; set; }
+
         public DateTime RequestDate { get; set; }
 
-        public bool Accepted { get; set; }
+        public DateTime? AcceptedDate { get; set; }
     }
 }

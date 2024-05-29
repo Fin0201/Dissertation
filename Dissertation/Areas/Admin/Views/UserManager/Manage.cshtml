@@ -1,0 +1,38 @@
+﻿@using Dissertation.Areas.Admin.Models
+@model List<ManageUserRolesViewModel>
+
+@{
+    ViewData["Title"] = "User Manager Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">User Manager</h1>
+</div>
+
+<form asp-action="Manage" method="post">
+    <div class="card">
+        <div class="card-header">
+            <h2>@Model.FirstOrDefault().User.Email Roles</h2>
+        </div>            
+        <div class="card-body">
+
+            <!-- Loops through each role -->
+            @for (int i = 0; i < Model.Count; i++) 
+            {
+                <!-- Creates a checkbox used to update the users roles -->
+                <div class="form-check"> 
+                    <input type="hidden" asp-for="@Model[i].User.Id"/> 
+                    <input type="hidden" asp-for="@Model[i].Role.Name"/> 
+                    <input class="form-check-input" type="checkbox" asp-for="@Model[i].InRole"> 
+                    <label class="form-check-label"> @Model[i].Role.Name </label> 
+                </div> 
+            }
+        </div>
+
+        <!-- Creates buttons to apply the changes or cancel -->
+        <div class="card-footer">
+            <button type="submit" class="btn btn-success">Update</button>
+            <a class="btn btn-danger" asp-action="Index">Cancel</a>
+        </div>
+    </div>
+</form>

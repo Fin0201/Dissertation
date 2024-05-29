@@ -6,19 +6,21 @@ using Dissertation.Data;
 using Dissertation.Services;
 using System.Security.Claims;
 using Dissertation.Areas.Member.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Dissertation.Areas.Member.Views
 {
     [Area("Member")]
+    [Authorize(Roles = "Member")]
     public class ItemController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly IImageUploadService _imageUploadService;
+        private readonly ImageUploadService _imageUploadService;
         private readonly ILocationService _locationService;
         private readonly string[] allowedExtensions = [".jpg", ".jpeg", ".png", ".webp"];
 
-        public ItemController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IImageUploadService imageUploadService, ILocationService locationService)
+        public ItemController(ApplicationDbContext context, UserManager<IdentityUser> userManager, ImageUploadService imageUploadService, ILocationService locationService)
         {
             _context = context;
             _userManager = userManager;
@@ -27,19 +29,20 @@ namespace Dissertation.Areas.Member.Views
         }
 
         // GET: Member/Item
-        public async Task<IActionResult> Index(string searchString, double? lat, double? lon)
+        public async Task<IActionResult> Index(string searchString, string postcode, int radius)
         {
-            /*return _context.Items != null ?
-                        View(await _context.Items.ToListAsync()) :
-                        Problem("Entity set 'ApplicationDbContext.Items' is null.");*/
-
-
             var items = _context.Items;
             var itemList = await items.ToListAsync();
 
+            var (lat, lon) = await _locationService.PostcodeToCoordinates(postcode);
+
+
+            // Apply location filter if necessary
             if (lat.HasValue && lat.Value != 0 && lon.HasValue && lon.Value != 0)
             {
-                itemList = itemList.Where(i => _locationService.WithinRadius(i.Latitude, i.Longitude, lat.GetValueOrDefault(), lon.GetValueOrDefault(), 10)).ToList();
+                // Default radius is 10 miles
+                radius = radius <= 0 ? 10 : radius;
+                itemList = itemList.Where(i => _locationService.WithinRadius(i.Latitude, i.Longitude, lat.GetValueOrDefault(), lon.GetValueOrDefault(), radius)).ToList();
             }
 
             // Apply search filter if necessary
@@ -65,6 +68,7 @@ namespace Dissertation.Areas.Member.Views
             }
 
             var Item = await _context.Items
+                .Include(i => i.Category)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (Item == null)
             {
@@ -75,7 +79,7 @@ namespace Dissertation.Areas.Member.Views
             {
                 Item = Item,
                 Reviews = await _context.Reviews.Where(r => r.ItemId == Item.Id).ToListAsync(),
-                Requests = await _context.UserRequests.Where(r => r.ItemId == Item.Id).ToListAsync()
+                Requests = await _context.Requests.Where(r => r.ItemId == Item.Id).ToListAsync()
             };
 
             return View(itemViewModel);
@@ -92,12 +96,27 @@ namespace Dissertation.Areas.Member.Views
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,MaxDays,Category")] Item item, string postcode, IFormFile imageFile)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,MaxDays")] Item item, string postcode, string categoryOption, IFormFile imageFile)
         {
             var currentUserId = _userManager.GetUserId(User);
             if (currentUserId == null)
             {
                 return NotFound();
+            }
+
+            if (categoryOption == null)
+            {
+                ModelState.AddModelError("CategoryId", "Invalid category");
+            }
+
+            int categoryId = 0;
+            try
+            {
+                categoryId = int.Parse(categoryOption);
+            }
+            catch
+            {
+                ModelState.AddModelError("CategoryId", "Invalid category");
             }
 
             if (!ModelState.IsValid)
@@ -109,6 +128,13 @@ namespace Dissertation.Areas.Member.Views
             if (lat == null || lon == null)
             {
                 ModelState.AddModelError("Postcode", "Invalid postcode");
+                return View(item);
+            }
+
+            var category = await _context.Categories.FindAsync(categoryId);
+            if (category == null)
+            {
+                ModelState.AddModelError("CategoryId", "Invalid category");
                 return View(item);
             }
 
@@ -133,6 +159,7 @@ namespace Dissertation.Areas.Member.Views
             item.ThumbnailPath = "/images/user-uploads/" + thumbnailName;
             item.AddedOn = DateTime.Now;
             item.ModifiedOn = DateTime.Now;
+            item.CategoryId = categoryId;
             item.Latitude = lat.GetValueOrDefault();
             item.Longitude = lon.GetValueOrDefault();
 
@@ -163,7 +190,13 @@ namespace Dissertation.Areas.Member.Views
                 return Unauthorized();
             }
 
-            return View(item);
+            var itemCategory = new ItemCategoryViewModel()
+            {
+                Item = item,
+                Categories = _context.Categories
+            };
+
+            return View(itemCategory);
         }
 
         // POST: Member/Item/Edit/5
@@ -171,7 +204,7 @@ namespace Dissertation.Areas.Member.Views
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,MaxDays,Category")] Item item, string postcode, IFormFile imageFile)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,MaxDays")] Item item, string postcode, int categoryId, IFormFile imageFile)
         {
             if (id != item.Id)
             {
@@ -197,6 +230,12 @@ namespace Dissertation.Areas.Member.Views
                 ModelState.AddModelError("Postcode", "Invalid postcode");
             }
 
+            var category = await _context.Categories.FindAsync(categoryId);
+            if (category == null)
+            {
+                ModelState.AddModelError("CategoryId", "Invalid category");
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(item);
@@ -207,6 +246,7 @@ namespace Dissertation.Areas.Member.Views
             item.LoanerId = existingItem.LoanerId;
             item.Latitude = lat.GetValueOrDefault();
             item.Longitude = lon.GetValueOrDefault();
+            item.CategoryId = categoryId;
 
             try
             {
@@ -299,6 +339,12 @@ namespace Dissertation.Areas.Member.Views
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> GetItemCategories()
+        {
+            var categories = await _context.Categories.ToListAsync();
+            return Json(categories);
         }
 
         private bool ItemExists(int id)

@@ -8,12 +8,13 @@
             Unavailable
         }
 
-        public enum ItemCategory
+        public enum RequestStatus
         {
-            Drone,
-            Camera,
-            Tablet,
-            Other
+            Pending,
+            Accepted,
+            Rejected,
+            Completed,
+            NoResponse
         }
     }
 }

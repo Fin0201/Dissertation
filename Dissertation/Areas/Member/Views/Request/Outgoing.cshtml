@@ -2,7 +2,7 @@
 @using Dissertation.Areas.Member.Models
 @inject SignInManager<IdentityUser> signInManager
 @inject UserManager<IdentityUser> userManager
-@model IEnumerable<UserRequest>
+@model IEnumerable<Request>
 
 @{
     ViewData["Title"] = "Requests";
@@ -14,7 +14,7 @@
 	userId = userManager.GetUserId(User);
 }
 
-<h1>Chats</h1>
+<h1>Requests</h1>
 
 <div class="container">
 	@foreach (var request in Model)

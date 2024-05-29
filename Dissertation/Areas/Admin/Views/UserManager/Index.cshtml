@@ -1,0 +1,41 @@
+﻿@using Dissertation.Areas.Admin.Models
+@model IEnumerable<UserRolesViewModel>
+
+@{
+    ViewData["Title"] = "User Manager Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">User Manager</h1>
+</div>
+
+@*Creates the table headings*@
+<table class="table table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>User ID</th>
+            <th>User Email</th>
+            <th>Roles</th>
+            <th>Manage Roles</th>
+            <th>Manage User</th>
+        </tr>
+    </thead>
+    <tbody>
+
+       @*Loops through each item in the database and displays them seperately to the user*@
+       @foreach (var user in Model)
+       {
+           <tr>
+               <td>@user.User.Id</td>
+               <td>@user.User.Email</td>
+               <td>@string.Join(", ", user.Roles.ToList())</td>
+               <td>
+                   <a class="btn-primary btn" asp-action="Manage" asp-route-id="@user.User.Id">Manage Roles</a>
+               </td>
+               <td>
+                   <a class="btn-danger btn" asp-action="Delete" asp-route-id="@user.User.Id">Delete User</a>
+               </td>
+           </tr>
+       }
+    </tbody>
+</table>
