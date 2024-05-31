@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Dissertation.Migrations
 {
     /// <inheritdoc />
-    public partial class M1 : Migration
+    public partial class m2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -277,8 +277,7 @@ namespace Dissertation.Migrations
                     RequestStart = table.Column<DateTime>(type: "TEXT", nullable: false),
                     RequestEnd = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Status = table.Column<int>(type: "INTEGER", nullable: false),
-                    RequestDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    AcceptedDate = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    RequestDate = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -331,8 +330,8 @@ namespace Dissertation.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "04285a9e-1c01-40ed-a54c-c82ae8bdc52a", "d357df44-d101-4005-a407-d2e7b957df68", "Member", "MEMBER" },
-                    { "de5644d0-a1b2-445a-b618-c3614354ce4f", "c9600360-fc69-4caf-b342-022616660f67", "Admin", "ADMIN" }
+                    { "03841d02-570c-4795-99d4-499d134548ee", "caaa7913-35db-4337-8225-899ddb076ade", "Member", "MEMBER" },
+                    { "72191ab2-1032-4b60-beb0-81e825b70727", "7f26f211-1ff3-413a-931d-1ee65c6d154e", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
@@ -340,8 +339,8 @@ namespace Dissertation.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "dc5bc597-9611-4294-9163-dcff47015ed0", 0, "7151c148-28b6-4d75-b5bd-4a8a1c521ae2", "admin@test.com", false, false, null, "ADMIN@TEST.COM", "ADMIN@TEST.COM", "AQAAAAIAAYagAAAAEMY9R9MeUUvNPOUN9dx9BcfSdO44Tqg+pc3U9PUEG+xrQ4j1mHJgIP/y164d/Lhg7w==", null, false, "c01d9419-5360-4089-9e32-06736a811ba9", false, "AdminAccount" },
-                    { "eb0ac912-5401-4444-a1b2-79736659e12c", 0, "75d9cf10-aca2-4601-90e3-8be1ca1f6f99", "member@test.com", false, false, null, "MEMBER@TEST.COM", "MEMBER@TEST.COM", "AQAAAAIAAYagAAAAEIzWEt8GOCAfOfv+4eja6r/v+6ySfj0I297LJYj51JNfG4QVtZMuSnLsAR7NXQVjSg==", null, false, "62d4d915-bad8-41b9-9dae-2e9ebc429ea7", false, "MemberAccount" }
+                    { "481d0fd2-5f6a-484a-adec-90fdcc793881", 0, "d00ce0d3-f39f-4ebf-96a2-b234888604c4", "admin@test.com", false, false, null, "ADMIN@TEST.COM", "ADMIN@TEST.COM", "AQAAAAIAAYagAAAAEJHdatKHHmwszBF60zyMEDFCHoE+xMHzkKZh34k0ucK93OuypKw3oytGu5tr5Xi6yw==", null, false, "90d4910a-24d6-4e83-a127-2c3a404c4635", false, "AdminAccount" },
+                    { "8c879869-3f29-402c-95c2-6e2c21c55a31", 0, "ea57a0bb-6d6f-415a-b11c-91998c194098", "member@test.com", false, false, null, "MEMBER@TEST.COM", "MEMBER@TEST.COM", "AQAAAAIAAYagAAAAEEpIjv72TCnXMgn01LOQmYqv2YU1kQuWQhmkeJRI1q266dZrndL8CVM43AD/M/5SwQ==", null, false, "5de406d3-f2f2-4719-a2c5-cd4767a3aa9f", false, "MemberAccount" }
                 });
 
             migrationBuilder.InsertData(
@@ -360,9 +359,9 @@ namespace Dissertation.Migrations
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { "04285a9e-1c01-40ed-a54c-c82ae8bdc52a", "dc5bc597-9611-4294-9163-dcff47015ed0" },
-                    { "de5644d0-a1b2-445a-b618-c3614354ce4f", "dc5bc597-9611-4294-9163-dcff47015ed0" },
-                    { "04285a9e-1c01-40ed-a54c-c82ae8bdc52a", "eb0ac912-5401-4444-a1b2-79736659e12c" }
+                    { "03841d02-570c-4795-99d4-499d134548ee", "481d0fd2-5f6a-484a-adec-90fdcc793881" },
+                    { "72191ab2-1032-4b60-beb0-81e825b70727", "481d0fd2-5f6a-484a-adec-90fdcc793881" },
+                    { "03841d02-570c-4795-99d4-499d134548ee", "8c879869-3f29-402c-95c2-6e2c21c55a31" }
                 });
 
             migrationBuilder.CreateIndex(

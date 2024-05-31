@@ -19,35 +19,33 @@
 <div class="container">
 	@foreach (var chat in Model)
 	{
-		<div class="row">
-			<a asp-area="Member" asp-controller="Chat" asp-action="Message" asp-route-id="@chat.Chat.Id">
-				<div class="chat-box">
-					<div class="col">
-						<div class="chat-item-content">
+			<a asp-area="Member" asp-controller="Chat" asp-action="Message" asp-route-id="@chat.Chat.Id" class="text-decoration-none">
+			<div class="row">
+				<div class="chat-box p-3 p mb-3 light-blue-card chat-link">
+					<div class="row">
+						<div class="chat-item-content col-4">
 							@if (chat.Chat.UserOneId == userId)
 							{
-								<p style="margin-bottom: 0" class="chat-card-text">Chat with: @chat.Chat.UserTwo.UserName</p>
+								<h5 style="margin-bottom: 0; color: black;" class="chat-card-text">Chat with: @chat.Chat.UserTwo.UserName</h5>
 							}
 							else
 							{
-								<p style="margin-bottom: 0" class="chat-card-text">Chat with: @chat.Chat.UserOne.UserName</p>
+								<h5 style="margin-bottom: 0; color: black;" class="chat-card-text">Chat with: @chat.Chat.UserOne.UserName</h5>
 							}
 						</div>
-					</div>
-					<div class="col">
-						<div class="chat-item-content">
+						<div class="chat-item-content col text-end">
 							@if (@chat.Notification.SenderId != userId && !@chat.Notification.RecipientRead)
 							{
-								<p style="margin-bottom: 0" class="chat-card-text chat-notification-text">New messages</p>
+								<h5 style="margin-bottom: 0; color: red;" class="chat-card-text chat-notification-text">New messages</h5>
 							}
 							else
 							{
-								<p style="margin-bottom: 0" class="chat-card-text">No new messages</p>
+								<h5 style="margin-bottom: 0; color: black;" class="chat-card-text">No new messages</h5>
 							}
 						</div>
 					</div>
 				</div>
+			</div>
 			</a>
-		</div>
 	}
 </div>

@@ -50,6 +50,7 @@ function displayMessages(messageData) {
         messageRow.className = "row";
         messageList.insertBefore(messageRow, messageList.firstChild);
 
+        // Create two columns for the message
         var colSecondary = document.createElement("div");
         colSecondary.className = "col";
         messageRow.appendChild(colSecondary);
@@ -58,7 +59,7 @@ function displayMessages(messageData) {
         messageRow.appendChild(colPrimary);
 
 
-        // Create two columns for the message
+        // Create two divs for the message
         var divPrimary = document.createElement("div");
         divPrimary.className = "primary-message";
         colPrimary.appendChild(divPrimary);
@@ -71,6 +72,7 @@ function displayMessages(messageData) {
             var image = document.createElement("img");
             image.src = message.thumbnailPath;
             image.className = "message-content-thumbnail";
+            image.alt = "Message image";
             image.onclick = function () {
                 window.open(message.imagePath, '_blank', 'noopener, noreferrer');
             }

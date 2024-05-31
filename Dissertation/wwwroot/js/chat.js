@@ -39,6 +39,7 @@ connection.on("ReceiveMessage", function (user, message, imagePath, thumbnailPat
         var image = document.createElement("img");
         image.src = thumbnailPath;
         image.className = "message-content-thumbnail";
+        image.alt = "Message image";
         image.onclick = function () {
             window.open(imagePath, '_blank', 'noopener, noreferrer');
         }
@@ -83,6 +84,11 @@ connection.start().then(function () {
 });
 
 document.getElementById("sendButton").addEventListener("click", function (event) {
+    sendMessage();
+    event.preventDefault();
+});
+
+function sendMessage() {
     var message = document.getElementById("messageInput").value;
     var image = document.getElementById("imageInput").files[0];
     var formData = new FormData();
@@ -104,13 +110,17 @@ document.getElementById("sendButton").addEventListener("click", function (event)
             connection.invoke("SendMessage", currentUserName, message, imageData.imagePath, imageData.thumbnailPath).catch(function (err) {
                 return console.error(err.toString());
             });
+            document.getElementById("imageInput").value = '';
+            document.getElementById("messageInput").value = '';
+            document.getElementById("messageImageButton").className = 'message-image-button';
+            document.getElementById("messageImageClearButton").className = 'message-image-button hidden';
         },
         error: function () {
             alert("Error sending message.");
         }
     });
-    event.preventDefault();
-});
+
+}
 
 document.getElementById("messageImageButton").addEventListener("click", function (event) {
     document.getElementById("imageInput").click();
@@ -136,4 +146,12 @@ document.addEventListener('DOMContentLoaded', () => {
             removeImageBtn.className = 'message-image-button';
         }
     });
+});
+
+document.getElementById("messageInput").addEventListener("keydown", function (event) {
+    console.log("here")
+    if (event.key === "Enter") {
+        sendMessage();
+        event.preventDefault();
+    }
 });

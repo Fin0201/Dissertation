@@ -15,10 +15,11 @@
     isAdmin = await userManager.IsInRoleAsync(await userManager.GetUserAsync(User), "Admin");
 }
 
-<h1>Manage Item</h1>
+<h1 class="text-center">Loan an Item</h1>
+<hr />
 
-<p>
-    <a asp-action="Create" class="btn btn-success">Create New Item</a>
+<p class="text-center">
+    <a asp-action="Create" class="btn btn-success margin-left: 50%">List an Item</a>
 </p>
 
 
@@ -27,8 +28,8 @@
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                    <div class="card shadow-2-strong" style="border-radius: 1rem;">
-                        <div class="card-body p-5 text-center">
+                    <div class="card" style="border: none;">
+                        <div class="card-body text-center">
                             <form asp-action="Index" method="get">
                                 <div class="mb-3">
                                     <label>Search for an item</label>
@@ -43,6 +44,7 @@
                         </div>
                     </div>
                 </div>
+                <hr />
             </div>
         </div>
     </section>
@@ -52,15 +54,15 @@
 <div class="d-flex flex-wrap justify-content-between">
     @foreach (var item in Model) // Loops through each item and then displays each item in seperate cards
     {
-        <div class="card mb-4 col-2" style="margin-left: 10px; margin-right: 10px;">
+        <div class="card mb-4 col-3 light-blue-card" style="margin-left: 10px; margin-right: 10px;">
             <div class="card-body">
                 <a asp-action="Details" asp-route-id="@item.Id">
                     <img src="@Html.DisplayFor(modelItem => item.ThumbnailPath)" alt="Item image" style="display: block; margin-left: auto; margin-right: auto; width: 60%; height: auto;" />
                 </a>
                 <h5 class="card-title text-center mb-3">@Html.DisplayFor(modelItem => item.Name)</h5>
                 <p class="card-text">
-                    <strong>Time and Date:</strong> @Html.DisplayFor(modelItem => item.Category) <br />
-                    <strong>Instructor:</strong> @Html.DisplayFor(modelItem => item.Price) <br />
+                    <strong>Category:</strong> @Html.DisplayFor(modelItem => item.Category.Name) <br />
+                    <strong>Price:</strong> @Html.DisplayFor(modelItem => item.Price) <br />
                 </p>
                 <div class="d-flex justify-content-between">
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-success w-100 mt-1">Details</a>

@@ -1,11 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using Dissertation.Areas.Member.Models
+@using static Dissertation.Models.Enums
 @inject SignInManager<IdentityUser> signInManager
 @inject UserManager<IdentityUser> userManager
 @model IEnumerable<Request>
 
 @{
-    ViewData["Title"] = "Requests";
+	ViewData["Title"] = "Requests";
 	string userId = "";
 }
 
@@ -20,34 +21,32 @@
 	@foreach (var request in Model)
 	{
 		<div class="row">
-			<a asp-area="Member" asp-controller="Chat" asp-action="Message" asp-route-id="@request.RenterId">
-				<div class="chat-box">
-					<div class="col">
-						<div class="chat-item-content">
-							@if (request.RenterId == userId)
-							{
-								<p style="margin-bottom: 0" class="chat-card-text">Chat with: @request.Renter.UserName</p>
-							}
-							else
-							{
-								@* <p style="margin-bottom: 0" class="chat-card-text">Chat with: @request.UserOne.UserName</p> *@
-							}
-						</div>
+			<div class="chat-box p-3 p mb-3 light-blue-card">
+				<div class="row">
+					<div class="chat-item-content col-2">
+						<a asp-area="Member" asp-controller="Item" asp-action="Details" asp-route-id="@request.Item.Id">
+							<img src="@Html.DisplayFor(modelItem => request.Item.ThumbnailPath)" alt="Item image" style="display: block; margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom: auto; max-width: 100%; max-height: 100%" />
+						</a>
 					</div>
-					<div class="col">
-						<div class="chat-item-content">
-							@* @if (@chat.Notification.SenderId != userId && !@chat.Notification.RecipientRead)
+					<div class="chat-item-content col-5">
+						<p style="margin-bottom: 0" class="chat-card-text">Item: @request.Item.Name</p>
+						<p style="margin-bottom: 0" class="chat-card-text">@request.RequestStart.ToString("dd/MM/yyyy") to @request.RequestEnd.ToString("dd/MM/yyyy")</p>
+						@{
+							var statusColour = request.Status switch
 							{
-								<p style="margin-bottom: 0" class="chat-card-text chat-notification-text">New messages</p>
-							}
-							else
-							{
-								<p style="margin-bottom: 0" class="chat-card-text">No new messages</p>
-							} *@
-						</div>
+								RequestStatus.Pending => "text-warning",
+								RequestStatus.Accepted => "text-success",
+								RequestStatus.Rejected => "text-danger",
+								_ => "text-dark"
+							};
+						}
+						<h4 style="color: @statusColour">Status: @request.Status</h4>
+					</div>
+					<div class="col text-end">
+						<a class="btn btn-danger mt-4" style="width: 100px" asp-action="CancelRequest" asp-route-id="@request.Id">Cancel</a>
 					</div>
 				</div>
-			</a>
+			</div>
 		</div>
 	}
 </div>

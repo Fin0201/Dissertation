@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dissertation.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240529092855_M1")]
-    partial class M1
+    [Migration("20240531202038_m2")]
+    partial class m2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -185,9 +185,6 @@ namespace Dissertation.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime?>("AcceptedDate")
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("ItemId")
                         .HasColumnType("INTEGER");
 
@@ -277,15 +274,15 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "de5644d0-a1b2-445a-b618-c3614354ce4f",
-                            ConcurrencyStamp = "c9600360-fc69-4caf-b342-022616660f67",
+                            Id = "72191ab2-1032-4b60-beb0-81e825b70727",
+                            ConcurrencyStamp = "7f26f211-1ff3-413a-931d-1ee65c6d154e",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "04285a9e-1c01-40ed-a54c-c82ae8bdc52a",
-                            ConcurrencyStamp = "d357df44-d101-4005-a407-d2e7b957df68",
+                            Id = "03841d02-570c-4795-99d4-499d134548ee",
+                            ConcurrencyStamp = "caaa7913-35db-4337-8225-899ddb076ade",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         });
@@ -380,33 +377,33 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "dc5bc597-9611-4294-9163-dcff47015ed0",
+                            Id = "481d0fd2-5f6a-484a-adec-90fdcc793881",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7151c148-28b6-4d75-b5bd-4a8a1c521ae2",
+                            ConcurrencyStamp = "d00ce0d3-f39f-4ebf-96a2-b234888604c4",
                             Email = "admin@test.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@TEST.COM",
                             NormalizedUserName = "ADMIN@TEST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMY9R9MeUUvNPOUN9dx9BcfSdO44Tqg+pc3U9PUEG+xrQ4j1mHJgIP/y164d/Lhg7w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJHdatKHHmwszBF60zyMEDFCHoE+xMHzkKZh34k0ucK93OuypKw3oytGu5tr5Xi6yw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c01d9419-5360-4089-9e32-06736a811ba9",
+                            SecurityStamp = "90d4910a-24d6-4e83-a127-2c3a404c4635",
                             TwoFactorEnabled = false,
                             UserName = "AdminAccount"
                         },
                         new
                         {
-                            Id = "eb0ac912-5401-4444-a1b2-79736659e12c",
+                            Id = "8c879869-3f29-402c-95c2-6e2c21c55a31",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "75d9cf10-aca2-4601-90e3-8be1ca1f6f99",
+                            ConcurrencyStamp = "ea57a0bb-6d6f-415a-b11c-91998c194098",
                             Email = "member@test.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "MEMBER@TEST.COM",
                             NormalizedUserName = "MEMBER@TEST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEIzWEt8GOCAfOfv+4eja6r/v+6ySfj0I297LJYj51JNfG4QVtZMuSnLsAR7NXQVjSg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEpIjv72TCnXMgn01LOQmYqv2YU1kQuWQhmkeJRI1q266dZrndL8CVM43AD/M/5SwQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "62d4d915-bad8-41b9-9dae-2e9ebc429ea7",
+                            SecurityStamp = "5de406d3-f2f2-4719-a2c5-cd4767a3aa9f",
                             TwoFactorEnabled = false,
                             UserName = "MemberAccount"
                         });
@@ -474,18 +471,18 @@ namespace Dissertation.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "dc5bc597-9611-4294-9163-dcff47015ed0",
-                            RoleId = "de5644d0-a1b2-445a-b618-c3614354ce4f"
+                            UserId = "481d0fd2-5f6a-484a-adec-90fdcc793881",
+                            RoleId = "72191ab2-1032-4b60-beb0-81e825b70727"
                         },
                         new
                         {
-                            UserId = "dc5bc597-9611-4294-9163-dcff47015ed0",
-                            RoleId = "04285a9e-1c01-40ed-a54c-c82ae8bdc52a"
+                            UserId = "481d0fd2-5f6a-484a-adec-90fdcc793881",
+                            RoleId = "03841d02-570c-4795-99d4-499d134548ee"
                         },
                         new
                         {
-                            UserId = "eb0ac912-5401-4444-a1b2-79736659e12c",
-                            RoleId = "04285a9e-1c01-40ed-a54c-c82ae8bdc52a"
+                            UserId = "8c879869-3f29-402c-95c2-6e2c21c55a31",
+                            RoleId = "03841d02-570c-4795-99d4-499d134548ee"
                         });
                 });
 

@@ -1,8 +1,34 @@
 ﻿@{
-    ViewData["Title"] = "Admin Home Page";
+    ViewData["Title"] = "Admin Portal";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome Admin</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Admin Portal</h1>
+    <div style="height:70vh; margin-top:10vh;">
+        <div class="row d-flex justify-content-center align-items-center">
+            <div class="col-md-6 mb-4">
+                <a asp-area="Admin" asp-controller="RolesManager" asp-action="Index" class="card text-bg-info text-decoration-none text-center button" style="background-color: deepskyblue">
+                    <div class="card-body" style="height: 200px;">
+                        <h5 class="card-title" style="font-size: 24px; line-height: 150px; color: black;">Manage Roles</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-6 mb-4">
+                <a asp-area="Admin" asp-controller="RolesManager" asp-action="Index" class="card text-bg-info text-decoration-none text-center button" style="background-color: deepskyblue">
+                    <div class="card-body" style="height: 200px;">
+                        <h5 class="card-title" style="font-size: 24px; line-height: 150px; color: black;">Manage Users</h5>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="row d-flex justify-content-center align-items-center">
+            <div class="col-md-6 mb-4">
+                <a asp-area="Admin" asp-controller="RolesManager" asp-action="Index" class="card text-bg-info text-decoration-none text-center button" style="background-color: deepskyblue">
+                    <div class="card-body" style="height: 200px;">
+                        <h5 class="card-title" style="font-size: 24px; line-height: 150px; color: black;">Manage Classes</h5>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
 </div>

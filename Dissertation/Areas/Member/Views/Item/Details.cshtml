@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using static Dissertation.Models.Enums
 @inject SignInManager<IdentityUser> signInManager
 @inject UserManager<IdentityUser> userManager
 @model Dissertation.Areas.Member.Models.ItemViewModel
@@ -24,7 +25,10 @@
 {
 	if (Model.Requests.ElementAt(i).RenterId == userId)
 	{
-		requestSubmitted = true;
+        if (Model.Requests.ElementAt(i).Status != RequestStatus.Rejected)
+		{
+		    requestSubmitted = true;
+        }
 	}
 }
 
@@ -38,6 +42,7 @@
 
 
 <h1 class="text-center">@Model.Item.Name</h1>
+<hr />
 
 <div class="item-details-container">
     <img src="@Html.DisplayFor(model => model.Item.ImagePath)" alt="Item image" style="width: 300px; height: auto; margin-top: 0; margin-bottom: auto;" />
@@ -65,29 +70,35 @@
                             <h4>Send the owner a message!</h4>
                             <a asp-area="Member" asp-controller="Chat" asp-action="NewChat" asp-route-id="@Model.Item.Id" style="margin-bottom: 100px;" class="btn btn-primary">Message</a>
 
-                            if (requestSubmitted)
-                            {
-                                <p>You have already requested this item</p>
-                                <button id="calcelRequestBtn" class="btn btn-danger" style="width: 100%; margin-bottom: 50px">Cancel Request</button>
-                            }
-                            else
-                            {
-                                <h4>Want to request this item?</h4>
-                                <div class="form-group mt-2">
-                                    <label>Select date and time:</label>
+                            <div class="card light-blue-card" style="border-radius: 10px;">
+                                <div class="card-body" id="requestForm">
+                                    @if (requestSubmitted)
+                                    {
+                                        <p>You have already requested this item</p>
+                                        <button id="cancelRequestButton" class="btn btn-danger" style="width: 100%; margin-bottom: 50px">Cancel Request</button>
+                                    }
+                                    else
+                                    {
+                                
+                                        <h4>Want to request this item?</h4>
+                                        <div class="form-group mt-2">
+                                            <label>Select date and time:</label>
+                                        </div>
+                                        <div class="form-group mt-2">
+                                            <label for="requestStart">Start Date:</label>
+                                            <input type="date" id="requestStart" />
+                                        </div>
+                                        <div class="form-group mt-2">
+                                            <label for="requestEnd">End Date:</label>
+                                            <input type="date" id="requestEnd" /><br><br>
+                                        </div>
+                                        <div class="form-group mt-2">
+                                            <button id="requestSendButton" class="btn btn-success" style="width: 100%; margin-bottom: 50px" value="Submit">Submit Request</button>
+                                        </div>
+                                
+                                    }
                                 </div>
-                                <div class="form-group mt-2">
-                                    <label for="requestStart">Start Date:</label>
-                                    <input type="date" id="requestStart" />
-                                </div>
-                                <div class="form-group mt-2">
-                                    <label for="requestEnd">End Date:</label>
-                                    <input type="date" id="requestEnd" /><br><br>
-                                </div>
-                                <div class="form-group mt-2">
-                                    <button id="requestSendButton" class="btn btn-success" style="width: 100%; margin-bottom: 50px" value="Submit">Submit Request</button>
-                                </div>
-                            }
+                            </div>
                         }
                     </div>
                 </div>
@@ -98,22 +109,32 @@
 
 @if (reviewSubmitted)
 {
-    <h2>You have already reviewed this item</h2>
+    <h3 class="text-center">You have already reviewed this item</h3>
 }
 else
 {
-    <h2>Leave a review</h2>
-    <div class="star-rating" id="reviewForm">
-        <span class="star" data-value="1">&#9733;</span>
-        <span class="star" data-value="2">&#9733;</span>
-        <span class="star" data-value="3">&#9733;</span>
-        <span class="star" data-value="4">&#9733;</span>
-        <span class="star" data-value="5">&#9733;</span>
-        <input type="hidden" name="rating" class="rating-value" id="ratingValue" value="0">
-        <br />
-        <textarea id="reviewText" class="review-text-input"></textarea>
-        <br />
-        <button type="submit" id="sendButton" class="btn btn-primary">Submit Review</button>
+    <div class="row">
+    <section>
+        <div class="container h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="text-center">
+                    <h3 class="text-center">Leave a review</h3>
+                        <div class="star-rating" id="reviewForm">
+                            <span class="star" data-value="1">&#9733;</span>
+                            <span class="star" data-value="2">&#9733;</span>
+                            <span class="star" data-value="3">&#9733;</span>
+                            <span class="star" data-value="4">&#9733;</span>
+                            <span class="star" data-value="5">&#9733;</span>
+                            <input type="hidden" name="rating" class="rating-value" id="ratingValue" value="0">
+                            <br />
+                            <textarea id="reviewText" placeholder="Review..." class="review-text-input w-50"></textarea>
+                            <br />
+                            <button type="submit" id="reviewSendButton" class="btn btn-primary">Submit Review</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 }
 
@@ -121,12 +142,12 @@ else
     @foreach (var review in Model.Reviews)
     {
         <div class="review">
-            <div class="review-header">
+            <div class="review-header mt-3" style="margin-left: 10px">
                 <span class="reviewer-name">@review.User.UserName</span>
                 <span class="review-date">@review.Timestamp</span>
             </div>
             <div class="review-body">
-                <div class="review-rating">
+                <div class="review-rating" style="margin-left: 10px">
                     @for (int i = 0; i < review.Rating; i++)
                     {
                         <span class="star selected">&#9733;</span>
@@ -136,10 +157,10 @@ else
                         <span class="star">&#9733;</span>
                     }
                 </div>
-                <p class="review-text">@review.ReviewText</p>
+                <p class="review-text mt-2 mb-2" style="margin-left: 10px">@review.ReviewText</p>
             </div>
         </div>
-        <hr style="margin-botton: 0;" />
+        <hr style="margin-bottom: 0;" />
     }
 </div>
 

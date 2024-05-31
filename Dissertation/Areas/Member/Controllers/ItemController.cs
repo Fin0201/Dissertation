@@ -31,7 +31,7 @@ namespace Dissertation.Areas.Member.Views
         // GET: Member/Item
         public async Task<IActionResult> Index(string searchString, string postcode, int radius)
         {
-            var items = _context.Items;
+            var items = _context.Items.Include(i => i.Category);
             var itemList = await items.ToListAsync();
 
             var (lat, lon) = await _locationService.PostcodeToCoordinates(postcode);
@@ -50,11 +50,6 @@ namespace Dissertation.Areas.Member.Views
             {
                 itemList = itemList.Where(s => s.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
             }
-
-            /*if (!String.IsNullOrEmpty(searchString))
-            {
-               items = items.Where(s => s.Name.Contains(searchString));
-            }*/
 
             return View(itemList);
         }
@@ -78,7 +73,7 @@ namespace Dissertation.Areas.Member.Views
             var itemViewModel = new ItemViewModel()
             {
                 Item = Item,
-                Reviews = await _context.Reviews.Where(r => r.ItemId == Item.Id).ToListAsync(),
+                Reviews = await _context.Reviews.Where(r => r.ItemId == Item.Id).Include(i => i.User).ToListAsync(),
                 Requests = await _context.Requests.Where(r => r.ItemId == Item.Id).ToListAsync()
             };
 

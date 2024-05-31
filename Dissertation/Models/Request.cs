@@ -22,14 +22,12 @@ namespace Dissertation.Models
         [ForeignKey("RenterId")]
         public IdentityUser? Renter { get; set; }
 
-        public DateTime RequestStart { get; set; }
+		public DateTime RequestStart { get; set; }
 
         public DateTime RequestEnd { get; set; }
 
         public RequestStatus Status { get; set; }
 
         public DateTime RequestDate { get; set; }
-
-        public DateTime? AcceptedDate { get; set; }
     }
 }

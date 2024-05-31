@@ -33,7 +33,8 @@ namespace Dissertation.Areas.Member.Views
 
             var requests = await _context.Requests
                 .Include(u => u.Item)
-                .Where(u => u.RenterId == currentUserId)
+                .Include(u => u.Renter)
+                .Where(u => u.Item.LoanerId == currentUserId)
                 .ToListAsync();
             return View(requests);
         }
@@ -50,7 +51,7 @@ namespace Dissertation.Areas.Member.Views
 
             var requests = await _context.Requests
                 .Include(u => u.Item)
-                .Where(u => u.Item.LoanerId == currentUserId)
+                .Where(u => u.RenterId == currentUserId)
                 .ToListAsync();
             return View(requests);
         }
@@ -162,16 +163,35 @@ namespace Dissertation.Areas.Member.Views
                 return NotFound();
             }
 
-            if (item.LoanerId != currentUserId)
-            {
-                return NotFound();
-            }
-
             request.Status = RequestStatus.Accepted;
-            request.AcceptedDate = DateTime.Now;
+
             _context.Update(request);
             await _context.SaveChangesAsync();
-            return NoContent();
+
+            var requests = _context.Requests.Where(r => r.ItemId == item.Id && r.Status == RequestStatus.Pending).ToList();
+
+            // Reject overlapping requests
+            foreach (var r in requests)
+			{
+				if (r.RequestStart < request.RequestStart && r.RequestEnd > request.RequestStart)
+				{
+					r.Status = RequestStatus.Rejected;
+					_context.Update(r);
+				}
+				else if (r.RequestStart < request.RequestEnd && r.RequestEnd > request.RequestEnd)
+				{
+					r.Status = RequestStatus.Rejected;
+					_context.Update(r);
+				}
+				else if (r.RequestStart >= request.RequestStart && r.RequestEnd <= request.RequestEnd)
+				{
+					r.Status = RequestStatus.Rejected;
+					_context.Update(r);
+				}
+			}
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Incoming");
         }
 
         public async Task<IActionResult> RejectRequest(int? id)
@@ -201,16 +221,10 @@ namespace Dissertation.Areas.Member.Views
                 return NotFound();
             }
 
-            if (item.LoanerId != currentUserId)
-            {
-                return NotFound();
-            }
-
             request.Status = RequestStatus.Rejected;
-            request.AcceptedDate = DateTime.Now;
             _context.Update(request);
             await _context.SaveChangesAsync();
-            return NoContent();
+            return RedirectToAction("Incoming");
         }
 
         public async Task UpdateRequests()

@@ -68,7 +68,7 @@ body {
     display: inline-block;
     background-color: #5040ff;
     border-radius: 15px;
-    word-break: break-all;
+    word-break: normal;
     white-space: normal;
     hyphens: auto;
     float: right;
@@ -100,6 +100,9 @@ body {
     color: black;
     text-align: left;
     margin-bottom: 0;
+    word-break: normal;
+    white-space: normal;
+    hyphens: auto;
 }
 
 .send-message-border {
@@ -164,6 +167,7 @@ body {
     border-radius: 15px;
     max-height: 15rem;
     max-width: 15rem;
+    display: block;
 }
 
 .nav-icon {
@@ -182,7 +186,6 @@ body {
 .chat-card-text {
     align-content: center;
     justify-content: center;
-    text-align: center;
 }
 
 .chat-box {
@@ -229,4 +232,20 @@ body {
 
 .hidden {
     display: none;
+}
+
+.navigation-bar {
+    background-color: #4bb5e3;
+}
+
+.light-blue-card {
+    background-color: #d9fcff;
+}
+
+.button {
+    border-radius: 15px;
+}
+
+.chat-link:hover {
+    background-color: #94f0f7;
 }

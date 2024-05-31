@@ -1,40 +1,41 @@
-﻿// const { request } = require("../../../../../../../AppData/Local/Microsoft/TypeScript/5.2/node_modules/undici-types/api");
-
-const cancelRequestButton = document.getElementById("cancelRequestButton");
+﻿const cancelRequestButton = document.getElementById("cancelRequestButton");
 const requestStart = document.getElementById("requestStart");
+const requestSendButton = document.getElementById("requestSendButton");
 
-document.getElementById("requestSendButton").addEventListener("click", function (event) {
-    var startDate = document.getElementById("requestStart").value;
-    var endDate = document.getElementById("requestEnd").value;
-    var formData = new FormData();
+if (requestSendButton) {
+    requestSendButton.addEventListener("click", function (event) {
+        var startDate = document.getElementById("requestStart").value;
+        var endDate = document.getElementById("requestEnd").value;
+        var formData = new FormData();
 
-    formData.append('id', itemId);
-    formData.append('requestStart', startDate);
-    formData.append('requestEnd', endDate);
+        formData.append('id', itemId);
+        formData.append('requestStart', startDate);
+        formData.append('requestEnd', endDate);
 
-    $.ajax({
-        type: "POST",
-        url: "/Member/UserRequest/SendRequest",
-        data: formData,
-        contentType: false,
-        processData: false,
-        success: function () {
-            requestForm = document.getElementById("reviewForm");
+        $.ajax({
+            type: "POST",
+            url: "/Member/Request/SendRequest",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function () {
+                requestForm = document.getElementById("requestForm");
 
-            while (requestForm.firstChild) {
-                reviewForm.removeChild(reviewForm.firstChild);
+                while (requestForm.firstChild) {
+                    requestForm.removeChild(requestForm.firstChild);
+                }
+
+                successText = document.createElement("p");
+                successText.className = "text-success";
+                successText.textContent = "Request sent successfully";
+                requestForm.appendChild(successText);
+            },
+            error: function () {
+                alert("Error sending request.");
             }
-
-            successText = document.createElement("p");
-            successText.className = "text-success";
-            successText.textContent = "Request sent successfully";
-            reviewForm.appendChild(successText);
-        },
-        error: function () {
-            alert("Error sending request.");
-        }
+        });
     });
-});
+}
 
 if (cancelRequestButton) {
     cancelRequestButton.addEventListener("click", function (event) {
@@ -44,21 +45,21 @@ if (cancelRequestButton) {
 
         $.ajax({
             type: "POST",
-            url: "/Member/UserRequest/CancelRequest",
+            url: "/Member/Request/CancelRequest",
             data: formData,
             contentType: false,
             processData: false,
             success: function () {
-                requestForm = document.getElementById("reviewForm");
+                requestForm = document.getElementById("requestForm");
 
                 while (requestForm.firstChild) {
-                    reviewForm.removeChild(reviewForm.firstChild);
+                    requestForm.removeChild(requestForm.firstChild);
                 }
 
                 successText = document.createElement("p");
                 successText.className = "text-success";
                 successText.textContent = "Request cancelled successfully";
-                reviewForm.appendChild(successText);
+                requestForm.appendChild(successText);
             },
             error: function () {
                 alert("Error cancelling request.");
@@ -67,7 +68,8 @@ if (cancelRequestButton) {
     });
 }
 
-function setRequestStart() {
+function setRequestDefault() {
+    // Sets the default start date
     const requestStart = document.getElementById("requestStart");
     var minDate = new Date();
     minDate.setDate(minDate.getDate() + 1);
@@ -103,4 +105,6 @@ function formatDate(date) {
     return `${year}-${month}-${day}`;
 }
 
-setRequestStart();
+if (requestStart) {
+    setRequestDefault();
+}
